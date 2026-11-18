@@ -4,7 +4,7 @@
     .venv/bin/python build.py            # everything (runs qr_build.py too)
     .venv/bin/python build.py --no-qr    # skip regenerating QR art
 
-Outputs: index.html, me/index.html, the .vcf, images, the Wallet pass (if certs/pass.cer
+Outputs: index.html, me/index.html, book/index.html (only if card.json has `booking`), the .vcf, images, the Wallet pass (if certs/pass.cer
 exists), robots.txt, sitemap.xml and vercel.json (with CSP hashes for the inline code).
 """
 import base64, hashlib, html, io, json, os, shutil, subprocess, sys, tempfile, zipfile
@@ -29,6 +29,16 @@ TITLE = f"{NAME} · {HEADLINE}"
 DESC = (f"Save {NAME} to your contacts in one tap. {HEADLINE}, through {ORG}, "
         "including work in regulated sectors.")
 OG_DESC = f"Save {NAME} to your contacts in one tap."
+
+# Paid 1:1 call, booked and paid on an external tool (Cal.com). null in card.json removes
+# /book, the button on /, the vCard link, the sitemap entry and the CSP header.
+BOOKING = card.get("booking")
+if BOOKING:
+    _sym = {"USD": "$", "EUR": "€", "GBP": "£"}.get(BOOKING["currency"], "")
+    PRICE = f"{_sym}{BOOKING['price']:g}" if _sym else f"{BOOKING['price']:g} {BOOKING['currency']}"
+    BOOK_TITLE = f"{BOOKING['duration_min']}-min {BOOKING['label']} with {NAME}"
+    BOOK_DESC = (f"Book a {BOOKING['duration_min']}-minute video call with {NAME} {BOOKING['summary']}. "
+                 f"{PRICE}, paid by card.")
 
 PHOTO = Image.open(ROOT / card["photo"]).convert("RGB")
 
@@ -166,6 +176,10 @@ def build_vcf():
         f"X-SOCIALPROFILE;type=linkedin:{LINKEDIN}",
         f"item2.URL:{AGENCY}", f"item2.X-ABLabel:{vesc(ORG)}",
         f"item3.URL:{SITE}", "item3.X-ABLabel:Card",
+    ]
+    if BOOKING:  # links to /book, not the tool, so saved contacts survive a change of booking tool
+        lines += [f"item4.URL:{SITE}/book", "item4.X-ABLabel:Book a call"]
+    lines += [
         f"PHOTO;ENCODING=b;TYPE=JPEG:{b64(photo, 'JPEG', quality=80, optimize=True, progressive=False)}",
         "END:VCARD",
     ]
@@ -243,6 +257,7 @@ ICONS = {
     "linkedin": '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V17M8 7.5v.01M12 17v-3.6a2.4 2.4 0 0 1 4.8 0V17M12 10.5V17"/></svg>',
     "email": '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg>',
     "phone": '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
+    "calendar": '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
     "web": '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
 }
 
@@ -258,6 +273,8 @@ def build_pages(avatar, has_pass):
     if PHONE:
         sec.append(f'<a class="btn" href="tel:{PHONE.replace(" ", "")}">{ICONS["phone"]}<span>Call</span></a>')
     sec.append(f'<a class="btn" href="{AGENCY}" rel="noopener">{ICONS["web"]}<span>{html.escape(ORG)}</span></a>')
+    if BOOKING:
+        sec.append(f'<a class="btn" href="/book">{ICONS["calendar"]}<span>{html.escape(BOOKING["button"])}</span></a>')
 
     person = {"@context": "https://schema.org", "@type": "Person", "name": NAME, "givenName": GIVEN,
               "familyName": FAMILY, "jobTitle": HEADLINE, "url": SITE + "/", "image": SITE + "/og.png",
@@ -289,13 +306,39 @@ def build_pages(avatar, has_pass):
         "icons": [{"src": "/me-icon-192.png", "sizes": "192x192", "type": "image/png"},
                   {"src": "/me-icon-512.png", "sizes": "512x512", "type": "image/png"}]}, indent=1))
     (PUB / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
+    urls = [f"{SITE}/"] + ([f"{SITE}/book"] if BOOKING else [])
     (PUB / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-        f"<url><loc>{SITE}/</loc></url></urlset>\n")
+        + "".join(f"<url><loc>{u}</loc></url>" for u in urls) + "</urlset>\n")
+    return css, build_book(css, avatar)
+
+
+def build_book(css, avatar):
+    """/book: what the call is, price and policy, and one primary button out to the booking tool."""
+    if not BOOKING:
+        shutil.rmtree(PUB / "book", ignore_errors=True)
+        return None
+    b = BOOKING
+    css = css + "\n" + (SRC / "book.css").read_text().strip()
+    service = {"@context": "https://schema.org", "@type": "Service", "name": f"{b['duration_min']}-min {b['label']}",
+               "url": SITE + "/book", "provider": {"@type": "Person", "name": NAME, "url": SITE + "/"},
+               "offers": {"@type": "Offer", "price": f"{b['price']:g}", "priceCurrency": b["currency"], "url": b["url"]}}
+    li = lambda items: "\n    ".join(f"<li>{html.escape(x)}</li>" for x in items)
+    page = render("book.html", TITLE=html.escape(BOOK_TITLE), DESC=html.escape(BOOK_DESC), SITE=SITE,
+                  NAME=html.escape(NAME), HEADLINE=html.escape(HEADLINE), AVATAR=avatar, CSS=css,
+                  JSONLD=json.dumps(service, ensure_ascii=False).replace("</", "<\\/"),
+                  LABEL=html.escape(f"{b['duration_min']}-minute {b['label']}"),
+                  FACTS=html.escape(f"{b['duration_min']} min · {PRICE} {b['currency']} · video call"),
+                  COVERS=li(b["covers"]), FOR=li(b["for"]),
+                  PAYMENT=html.escape(f"You pay {PRICE} {b['currency']} by card when you book. "
+                                      f"{b['charged_by']} issues the receipt."),
+                  POLICY=html.escape(b["policy"]), URL=html.escape(b["url"]))
+    (PUB / "book").mkdir(exist_ok=True)
+    (PUB / "book" / "index.html").write_text(page)
     return css
 
 
-def build_vercel_json(css):
+def build_vercel_json(css, book_css):
     base = ["default-src 'none'", "img-src 'self' data:", "connect-src 'self'", "manifest-src 'self'",
             "base-uri 'none'", "form-action 'none'", "frame-ancestors 'none'"]
     me_css = (PUB / "me" / "index.html").read_text().split("<style>")[1].split("</style>")[0]
@@ -314,6 +357,8 @@ def build_vercel_json(css):
             {"source": "/(.*)", "headers": common},
             {"source": "/", "headers": [{"key": "Content-Security-Policy", "value": csp_index}, revalidate]},
             {"source": "/me", "headers": [{"key": "Content-Security-Policy", "value": csp_me}, revalidate]},
+            *([{"source": "/book", "headers": [{"key": "Content-Security-Policy", "value": "; ".join(
+                base + [f"style-src {sha256_csp(book_css)}"])}, revalidate]}] if book_css else []),
             {"source": f"/{VCF}", "headers": [
                 {"key": "Content-Type", "value": "text/vcard; charset=utf-8"},
                 {"key": "Content-Disposition", "value": f'inline; filename="{VCF}"'}, revalidate]},
@@ -332,10 +377,13 @@ def main():
     avatar = build_images()
     n = build_vcf()
     has_pass = build_pass()
-    css = build_pages(avatar, has_pass)
-    build_vercel_json(css)
+    css, book_css = build_pages(avatar, has_pass)
+    build_vercel_json(css, book_css)
     size = (PUB / "index.html").stat().st_size
     print(f"built: index.html {size/1024:.1f} KB, {VCF} {n/1024:.1f} KB, title {len(TITLE)} chars, description {len(DESC)} chars")
+    if BOOKING:
+        bs = (PUB / "book" / "index.html").stat().st_size
+        print(f"built: book/index.html {bs/1024:.1f} KB, title {len(BOOK_TITLE)} chars, description {len(BOOK_DESC)} chars")
 
 
 if __name__ == "__main__":

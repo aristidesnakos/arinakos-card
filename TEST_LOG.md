@@ -51,3 +51,24 @@ Setup: QR on your phone screen at full brightness, the other phone at arm's leng
 | R6 | Wallet pass adds and its QR scans | Adds on first tap; scans first try | |
 
 Rule: keep style B only if it scans first try on every device. Otherwise style A is the card.
+
+## 18 Nov 2026 — paid call booking (`/book`, predictions written before testing)
+
+Setup: `booking` in `card.json` points to the existing Cal.com event "Consultation" (30 min, $70 USD, Stripe on),
+`https://cal.com/ari-nakos/consultation`. Cal.com stays the booking and payment tool; the site only links out.
+The end-to-end test uses a hidden $0 copy of that event that Ari makes, because Cal.com's Stripe app has no
+test mode and no live charge is allowed.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| B1 | `booking: null` build | `public/`, vCard, sitemap and `vercel.json` byte-identical to the last commit; no `/book` | **Pass.** `index.html`, `ari-nakos.vcf`, `sitemap.xml` and `vercel.json` byte-identical to HEAD; no `public/book` |
+| B2 | SEO heads, local `/` and `/book` | Both pass: `/book` title ≤ 60, description ≤ 155; `/` unchanged (41 / 143) | `PASS: 2 page(s) measured, 0 failing, 0 warning(s)`: `/` title 41 / description 143; `/book` title 38 / description 133 (after teaching `check_seo_heads.py` to read `book/index.html`) |
+| B3 | `/` local | Save contact still the only primary; "Book a paid call" is the last secondary button, links to `/book` | **Pass.** One `.primary` (Save contact, 62 px); "Book a paid call" is the 5th button, 56 px, `href=/book` |
+| B4 | `/book` local, CSP enforced | No console errors; no request leaves the origin before the button is tapped (the photo is inline) | **Pass.** Local server sending the `vercel.json` headers: page styled (style hash matches), no console errors, no requests before the injected ones in B5 |
+| B5 | CSP blocks third parties on `/book` | An injected `<script src>` / `<img src>` to another host is refused by the CSP | **Pass.** Injected jsDelivr script (`script-src-elem`), `example.com` image (`img-src`) and an inline `<style>` were all refused; script never ran |
+| B6 | Lighthouse mobile, local `/book` and `/` | Perf ≥ 95, A11y 100 on both | **Pass.** `/book` Perf 100, A11y 100, BP 100, SEO 100 (LCP 0.9 s, CLS 0, TBT 10 ms); `/` 100 / 100 / 100 / 100 |
+| B7 | "Pick a time" button | Opens the Cal.com Consultation page showing 30 min and $70 | **Partial.** Button `href` is `https://cal.com/ari-nakos/consultation` (HTTP 200); Cal.com's public data for that event says 30 min, 7000 cents USD, Stripe enabled. Not yet opened by hand |
+| B8 | iOS Simulator: import the new `.vcf` | Contact shows a fourth link labelled "Book a call" → `arinakos.com/book` | **Pass.** Read from the simulator's AddressBook DB (the Contacts view wouldn't scroll, same fault as test 6): new contact has LinkedIn, The Auspicious Company, Card, and **Book a call → https://arinakos.com/book** |
+| B9 | Test booking on the hidden $0 copy | Booking confirmed; confirmation email and calendar invite with a video link arrive | |
+| B10 | SEO heads, live `/` and `/book` after deploy | Both pass, same numbers as B2 | |
+| B11 | Live headers after deploy | `/book` has hash-only CSP with no `script-src` host; `.vcf` live with item4 | |

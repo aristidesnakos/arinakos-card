@@ -11,7 +11,12 @@ for p in paths:
     if base.startswith("http"):
         src = urllib.request.urlopen(base.rstrip("/") + p).read().decode()
     else:
-        src = (Path(base) / (p.strip("/") or "index.html")).read_text()
+        f = Path(base) / (p.strip("/") or "index.html")
+        if f.is_dir():
+            f = f / "index.html"
+        elif not f.exists():
+            f = f.with_suffix(".html")
+        src = f.read_text()
     t = html.unescape(re.search(r"<title>(.*?)</title>", src, re.S).group(1).strip())
     m = re.search(r'<meta name="description" content="(.*?)"', src, re.S)
     d = html.unescape(m.group(1)) if m else ""

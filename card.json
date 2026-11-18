@@ -10,6 +10,26 @@
   },
   "email": "ari@theauspiciouscompany.com",
   "phone": null,
+  "booking": {
+    "label": "AI strategy call",
+    "button": "Book a paid call",
+    "duration_min": 30,
+    "price": 70,
+    "currency": "USD",
+    "url": "https://cal.com/ari-nakos/consultation",
+    "summary": "on where AI fits in your business, with a written recommendation after",
+    "charged_by": "The Auspicious Company",
+    "covers": [
+      "Where AI fits in your product or operations, and what to build first",
+      "Architecture choices for products in regulated or audited markets",
+      "A written recommendation after the call, not just a meeting"
+    ],
+    "for": [
+      "Founders shipping AI products, especially into regulated industries",
+      "Teams deciding where AI should take work off their people"
+    ],
+    "policy": "Reschedule or cancel up to 24 hours before the call for a full refund. Later cancellations and no-shows aren’t refunded."
+  },
   "colors": { "navy": "#14213D", "gold": "#C48C28", "white": "#FFFFFF" },
   "photo": "photo.jpg",
   "qr_style": "A"
