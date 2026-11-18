@@ -80,6 +80,7 @@ list, a "Things I've built" link at the bottom); new `/work` lists personal vent
 (Japanese, E-commerce, Physical Intelligence), one cropped screenshot (self-hosted WebP) and one line each, taken from each
 product's live site or Ari's own wording. `/book` picks up the new style; `/me` is unchanged. One self-hosted font
 (Brygada 1918 SemiBold, SIL OFL, Latin subset, 7.2 KB woff2) is inlined as a `data:` URI, so every CSP gains `font-src data:`.
+Final look confirmed by Ari after comparing options side by side (fonts Brygada 1918 / Gloock / Schibsted Grotesk / Bricolage Grotesque, four card layouts, three `/work` layouts): he kept option A in each, which is what is built.
 Honest note on W2: the build script prints title and description lengths, so those numbers were seen before this table.
 
 | # | Test | Prediction | Result |
