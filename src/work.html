@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+<link rel="canonical" href="{{SITE}}/work">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1628" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{NAME}}">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESC}}">
+<meta property="og:url" content="{{SITE}}/work">
+<meta property="og:image" content="{{SITE}}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{NAME}}, {{HEADLINE}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:description" content="{{DESC}}">
+<meta name="twitter:image" content="{{SITE}}/og.png">
+<script type="application/ld+json">{{JSONLD}}</script>
+<style>{{CSS}}</style>
+</head>
+<body>
+<main class="work">
+  <a class="back" href="/"><img class="mini" src="{{AVATAR}}" width="48" height="48" alt=""><span>{{NAME}}</span></a>
+  <header class="work-head">
+    <h1>{{H1}}</h1>
+    <p class="lede">{{INTRO}}</p>
+  </header>
+  {{CLUSTERS}}
+  <footer class="work-foot">
+    {{FOOT}}
+  </footer>
+</main>
+</body>
+</html>

@@ -1,12 +1,12 @@
-.book{text-align:left}
-.back{display:inline-flex;align-items:center;gap:12px;min-height:56px;color:var(--fg);font-weight:600;text-decoration:none}
-.mini{width:56px;height:56px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--gold)}
-.book h1{margin:22px 0 8px;font-size:32px}
+.book{max-width:600px;margin:0 auto;padding:max(28px,env(safe-area-inset-top)) 24px max(48px,env(safe-area-inset-bottom))}
+.back{display:inline-flex;align-items:center;gap:12px;min-height:56px;font-weight:600;text-decoration:none}
+.mini{width:48px;height:48px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--gold)}
+.book h1{margin:28px 0 10px;font-size:clamp(36px,9vw,48px);line-height:1.05;letter-spacing:-.02em}
 .facts{margin:0 0 8px;color:var(--muted);font-size:19px;font-weight:600}
-.book h2{margin:28px 0 8px;font-size:20px;line-height:1.25}
+.book h2{margin:36px 0 10px;padding-top:14px;border-top:1px solid var(--line);font-size:24px;line-height:1.2}
 .book ul{margin:0;padding-left:1.2em}
-.book li{margin:6px 0}
+.book li{margin:8px 0}
 .book li::marker{color:var(--gold)}
 .book p{margin:8px 0}
-.book .actions{margin-top:30px}
+.book .btn{margin-top:36px}
 .note{color:var(--muted);text-align:center}

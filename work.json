@@ -1,0 +1,69 @@
+{
+  "title": "Things I’ve built",
+  "intro": "Ventures I built and run on my own, outside The Auspicious Company. They aren’t related to each other: most grew out of my own interests, and one started because someone asked for help.",
+  "clusters": [
+    {
+      "label": "Japanese",
+      "items": [
+        {
+          "name": "MichiKanji",
+          "url": "https://www.michikanji.com/",
+          "domain": "michikanji.com",
+          "kind": "Web",
+          "line": "Look up any Japanese kanji: free stroke order, readings and meanings for all 1,910 JLPT kanji.",
+          "image": "michikanji.webp"
+        },
+        {
+          "name": "Tan Dash",
+          "url": "https://tandash.michikanji.com/",
+          "domain": "tandash.michikanji.com",
+          "kind": "iPhone game",
+          "line": "A runner game that teaches hiragana, katakana and kanji. Free to start, no ads.",
+          "image": "tandash.webp"
+        },
+        {
+          "name": "Llanai",
+          "url": "https://www.llanai.com/",
+          "domain": "llanai.com",
+          "kind": "Web app",
+          "line": "A journal for writing in Japanese. Each mistake is marked, explained and queued for review.",
+          "image": "llanai.webp"
+        },
+        {
+          "name": "KanjiFun",
+          "url": "https://www.kanjifun.com/",
+          "domain": "kanjifun.com",
+          "kind": "Web game",
+          "line": "Learn your first kanji in a pixel-art adventure game.",
+          "image": "kanjifun.webp"
+        }
+      ]
+    },
+    {
+      "label": "E-commerce",
+      "items": [
+        {
+          "name": "Swimming Rhodes",
+          "url": "https://www.swimmingrhodes.gr/",
+          "domain": "swimmingrhodes.gr",
+          "kind": "Website and shop",
+          "line": "Website and online shop for a swimming school in Rhodes, Greece. I built it and run it for the owners.",
+          "image": "swimmingrhodes.webp"
+        }
+      ]
+    },
+    {
+      "label": "Physical Intelligence",
+      "items": [
+        {
+          "name": "FieldPi",
+          "url": "https://fieldpi.com/",
+          "domain": "fieldpi.com",
+          "kind": "Newsletter",
+          "line": "Physical Intelligence, a newsletter I write: operator observations from agriculture, construction and robotics.",
+          "image": "fieldpi.webp"
+        }
+      ]
+    }
+  ]
+}

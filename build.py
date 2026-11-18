@@ -40,6 +40,18 @@ if BOOKING:
     BOOK_DESC = (f"Book a {BOOKING['duration_min']}-minute video call with {NAME} {BOOKING['summary']}. "
                  f"{PRICE}, paid by card.")
 
+# Personal portfolio (/work), from work.json. Delete work.json to remove /work, its link on / and the sitemap entry.
+WORK = json.loads((ROOT / "work.json").read_text()) if (ROOT / "work.json").exists() else None
+if WORK:
+    _names = [i["name"] for c in WORK["clusters"] for i in c["items"]]
+    WORK_TITLE = f"Things {NAME} has built · Side projects"
+    WORK_DESC = f"Side projects {NAME} built and runs outside {ORG}: {', '.join(_names[:-1])} and {_names[-1]}."
+    assert len(WORK_TITLE) <= 60 and len(WORK_DESC) <= 155, (len(WORK_TITLE), len(WORK_DESC))
+
+# One self-hosted display face (Brygada 1918 SemiBold, SIL OFL, Latin subset), inlined so there's no font request.
+FONT_CSS = ('@font-face{font-family:"Brygada";font-weight:600;font-style:normal;font-display:swap;src:url(data:font/woff2;base64,'
+            + base64.b64encode((ROOT / "assets" / "fonts" / "brygada-600.woff2").read_bytes()).decode() + ') format("woff2")}')
+
 PHOTO = Image.open(ROOT / card["photo"]).convert("RGB")
 
 
@@ -260,6 +272,17 @@ ICONS = {
     "calendar": '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
     "web": '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
 }
+OUT = '<svg class="go" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M7 17 17 7M8 7h9v9"/></svg>'
+NEXT = '<svg class="go" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+PREV = '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'
+
+
+def row(href, icon, label, go=OUT, rel="", meta=""):
+    rel = f' rel="{rel}"' if rel else ""
+    meta = f'<span class="meta">{html.escape(meta)}</span>' if meta else ""
+    svg = ICONS[icon].replace("<svg ", '<svg class="ic" ', 1)
+    return (f'<a class="row" href="{href}"{rel}>{svg}'
+            f'<span class="lbl">{html.escape(label)}</span>{meta}{go}</a>')
 
 INDEX_JS = """(function(){var ua=navigator.userAgent||"";if(/FBAN|FBAV|Instagram|LinkedInApp|Line\\/|Snapchat|TikTok|musical_ly/i.test(ua)){document.getElementById("hint").hidden=false}})();"""
 
@@ -267,14 +290,21 @@ ME_JS = """(function(){var l=null;function g(){if("wakeLock"in navigator&&docume
 
 
 def build_pages(avatar, has_pass):
-    sec = [f'<a class="btn" href="{LINKEDIN}" rel="me noopener">{ICONS["linkedin"]}<span>LinkedIn</span></a>']
+    sec = [row(LINKEDIN, "linkedin", "LinkedIn", rel="me noopener")]
     if EMAIL:
-        sec.append(f'<a class="btn" href="mailto:{EMAIL}">{ICONS["email"]}<span>Email</span></a>')
+        sec.append(row(f"mailto:{EMAIL}", "email", "Email"))
     if PHONE:
-        sec.append(f'<a class="btn" href="tel:{PHONE.replace(" ", "")}">{ICONS["phone"]}<span>Call</span></a>')
-    sec.append(f'<a class="btn" href="{AGENCY}" rel="noopener">{ICONS["web"]}<span>{html.escape(ORG)}</span></a>')
+        sec.append(row(f'tel:{PHONE.replace(" ", "")}', "phone", "Call"))
+    sec.append(row(AGENCY, "web", ORG, rel="noopener"))
     if BOOKING:
-        sec.append(f'<a class="btn" href="/book">{ICONS["calendar"]}<span>{html.escape(BOOKING["button"])}</span></a>')
+        sec.append(row("/book", "calendar", BOOKING["button"], go=NEXT,
+                       meta=f"{BOOKING['duration_min']} min · {PRICE}"))
+    more = ""
+    if WORK:
+        n = len(_names)
+        teaser = ", ".join(_names[:3]) + (f" and {n - 3} more" if n > 3 else "")
+        more = (f'<a class="more" href="/work"><span class="t">{html.escape(WORK["title"])}</span>'
+                f'<span class="s">{html.escape(teaser)}</span>{NEXT}</a>')
 
     person = {"@context": "https://schema.org", "@type": "Person", "name": NAME, "givenName": GIVEN,
               "familyName": FAMILY, "jobTitle": HEADLINE, "url": SITE + "/", "image": SITE + "/og.png",
@@ -282,11 +312,11 @@ def build_pages(avatar, has_pass):
               "sameAs": [LINKEDIN, AGENCY]}
     if EMAIL:
         person["email"] = "mailto:" + EMAIL
-    css = (SRC / "style.css").read_text().strip()
+    css = FONT_CSS + "\n" + (SRC / "style.css").read_text().strip()
     index = render("index.html", TITLE=html.escape(TITLE), DESC=html.escape(DESC), OG_DESC=html.escape(OG_DESC),
                    SITE=SITE, NAME=html.escape(NAME), GIVEN=GIVEN, FAMILY=FAMILY, HEADLINE=html.escape(HEADLINE),
                    JSONLD=json.dumps(person, ensure_ascii=False).replace("</", "<\\/"), CSS=css, AVATAR=avatar,
-                   VCF=VCF, SECONDARY="\n    ".join(sec), JS=INDEX_JS)
+                   VCF=VCF, SECONDARY="\n    ".join(sec), MORE=more, JS=INDEX_JS)
     (PUB / "index.html").write_text(index)
 
     kit = []
@@ -306,11 +336,55 @@ def build_pages(avatar, has_pass):
         "icons": [{"src": "/me-icon-192.png", "sizes": "192x192", "type": "image/png"},
                   {"src": "/me-icon-512.png", "sizes": "512x512", "type": "image/png"}]}, indent=1))
     (PUB / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
-    urls = [f"{SITE}/"] + ([f"{SITE}/book"] if BOOKING else [])
+    urls = [f"{SITE}/"] + ([f"{SITE}/book"] if BOOKING else []) + ([f"{SITE}/work"] if WORK else [])
     (PUB / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
         + "".join(f"<url><loc>{u}</loc></url>" for u in urls) + "</urlset>\n")
-    return css, build_book(css, avatar)
+    return css, build_book(css, avatar), build_work(css, avatar)
+
+
+def build_work(css, avatar):
+    """/work: personal ventures outside the agency, one section per cluster, a screenshot and one line each."""
+    if not WORK:
+        shutil.rmtree(PUB / "work", ignore_errors=True)
+        return None
+    css = css + "\n" + (SRC / "work.css").read_text().strip()
+    out = PUB / "work"
+    shutil.rmtree(out, ignore_errors=True)
+    out.mkdir()
+    esc = html.escape
+    sections, items_ld, pos = [], [], 0
+    for ci, c in enumerate(WORK["clusters"], 1):
+        lis = []
+        for it in c["items"]:
+            shutil.copyfile(ROOT / "assets" / "work" / it["image"], out / it["image"])
+            pos += 1
+            lazy = "" if pos == 1 else ' loading="lazy"'
+            lis.append(
+                f'<li class="item"><div class="frame"><img class="shot" src="/work/{esc(it["image"])}" width="720" height="360"'
+                f' alt="Screenshot of the {esc(it["name"])} website"{lazy} decoding="async"></div>'
+                f'<div class="body"><h3><a href="{esc(it["url"])}" rel="noopener">{esc(it["name"])}</a></h3>'
+                f'<p class="kind"><span>{esc(it["kind"])}</span><span aria-hidden="true">·</span>'
+                f'<span class="dom">{esc(it["domain"])}{OUT}</span></p><p class="line">{esc(it["line"])}</p></div></li>')
+            items_ld.append({"@type": "ListItem", "position": pos, "name": it["name"], "url": it["url"]})
+        single = " single" if len(c["items"]) == 1 else ""
+        sections.append(
+            f'<section class="cluster{single}" aria-labelledby="c{ci}">\n    <div class="cluster-head">'
+            f'<span class="num">{ci:02d}</span><h2 id="c{ci}">{esc(c["label"])}</h2></div>\n    <ul class="items">\n      '
+            + "\n      ".join(lis) + "\n    </ul>\n  </section>")
+    foot = [f'<a href="/">{PREV}<span>Card</span></a>']
+    if BOOKING:
+        foot.append(f'<a href="/book"><span>{esc(BOOKING["button"])}</span>{NEXT}</a>')
+    foot.append(f'<a href="{LINKEDIN}" rel="me noopener"><span>LinkedIn</span>{OUT}</a>')
+    ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": WORK_TITLE, "url": SITE + "/work",
+          "author": {"@type": "Person", "name": NAME, "url": SITE + "/"},
+          "mainEntity": {"@type": "ItemList", "itemListElement": items_ld}}
+    page = render("work.html", TITLE=esc(WORK_TITLE), DESC=esc(WORK_DESC), SITE=SITE, NAME=esc(NAME),
+                  HEADLINE=esc(HEADLINE), AVATAR=avatar, CSS=css, H1=esc(WORK["title"]), INTRO=esc(WORK["intro"]),
+                  JSONLD=json.dumps(ld, ensure_ascii=False).replace("</", "<\\/"),
+                  CLUSTERS="\n  ".join(sections), FOOT="\n    ".join(foot))
+    (out / "index.html").write_text(page)
+    return css
 
 
 def build_book(css, avatar):
@@ -338,8 +412,8 @@ def build_book(css, avatar):
     return css
 
 
-def build_vercel_json(css, book_css):
-    base = ["default-src 'none'", "img-src 'self' data:", "connect-src 'self'", "manifest-src 'self'",
+def build_vercel_json(css, book_css, work_css):
+    base = ["default-src 'none'", "img-src 'self' data:", "font-src data:", "connect-src 'self'", "manifest-src 'self'",
             "base-uri 'none'", "form-action 'none'", "frame-ancestors 'none'"]
     me_css = (PUB / "me" / "index.html").read_text().split("<style>")[1].split("</style>")[0]
     csp_index = "; ".join(base + [f"style-src {sha256_csp(css)}", f"script-src {sha256_csp(INDEX_JS)}"])
@@ -359,6 +433,8 @@ def build_vercel_json(css, book_css):
             {"source": "/me", "headers": [{"key": "Content-Security-Policy", "value": csp_me}, revalidate]},
             *([{"source": "/book", "headers": [{"key": "Content-Security-Policy", "value": "; ".join(
                 base + [f"style-src {sha256_csp(book_css)}"])}, revalidate]}] if book_css else []),
+            *([{"source": "/work", "headers": [{"key": "Content-Security-Policy", "value": "; ".join(
+                base + [f"style-src {sha256_csp(work_css)}"])}, revalidate]}] if work_css else []),
             {"source": f"/{VCF}", "headers": [
                 {"key": "Content-Type", "value": "text/vcard; charset=utf-8"},
                 {"key": "Content-Disposition", "value": f'inline; filename="{VCF}"'}, revalidate]},
@@ -377,13 +453,17 @@ def main():
     avatar = build_images()
     n = build_vcf()
     has_pass = build_pass()
-    css, book_css = build_pages(avatar, has_pass)
-    build_vercel_json(css, book_css)
+    css, book_css, work_css = build_pages(avatar, has_pass)
+    build_vercel_json(css, book_css, work_css)
     size = (PUB / "index.html").stat().st_size
     print(f"built: index.html {size/1024:.1f} KB, {VCF} {n/1024:.1f} KB, title {len(TITLE)} chars, description {len(DESC)} chars")
     if BOOKING:
         bs = (PUB / "book" / "index.html").stat().st_size
         print(f"built: book/index.html {bs/1024:.1f} KB, title {len(BOOK_TITLE)} chars, description {len(BOOK_DESC)} chars")
+    if WORK:
+        ws = (PUB / "work" / "index.html").stat().st_size
+        imgs = sum(p.stat().st_size for p in (PUB / "work").glob("*.webp"))
+        print(f"built: work/index.html {ws/1024:.1f} KB + {imgs/1024:.0f} KB images, title {len(WORK_TITLE)} chars, description {len(WORK_DESC)} chars")
 
 
 if __name__ == "__main__":

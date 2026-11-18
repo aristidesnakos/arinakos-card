@@ -33,7 +33,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'none'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-bUSHSQqn2z80vpMAEIqWvCg/TNmD7Y9hY8ipXLmjoq0='; script-src 'sha256-OhDOJXFu8n2xFDwKJvW65+nCC4z6nYJdPqGmqX+Nzxo='"
+          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-IhTAHhmwAOJ0azAXDJkszkhh8TvR0mP5CT+wgnCI5aY='; script-src 'sha256-OhDOJXFu8n2xFDwKJvW65+nCC4z6nYJdPqGmqX+Nzxo='"
         },
         {
           "key": "Cache-Control",
@@ -46,7 +46,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'none'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-VFCsNKDqTyQ3gw2oSasbrxd+Aftkmm/XStbQ4wfpsEM='; script-src 'sha256-0IpcS+yuJexPPWdr6MaG8zyxecQrviak+gtLxu009Vc='"
+          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-VFCsNKDqTyQ3gw2oSasbrxd+Aftkmm/XStbQ4wfpsEM='; script-src 'sha256-0IpcS+yuJexPPWdr6MaG8zyxecQrviak+gtLxu009Vc='"
         },
         {
           "key": "Cache-Control",
@@ -59,7 +59,20 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'none'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-u0Xxl9MDEGJOJMY7qt7ExSsYCBAohoqcQ0T6rgprKM0='"
+          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-UZtmPFWP4hg9jAi5qyhO9iMmPeQXgmt6brNO4BhN7is='"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/work",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-LSO5f1YQGv9wvdb0W/RPlg+awYT2tHxaiP9SF+CILEg='"
         },
         {
           "key": "Cache-Control",

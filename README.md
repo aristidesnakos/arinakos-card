@@ -2,7 +2,7 @@
 
 1. Edit your details in `card.json` (name, headline, links, email, phone, which QR style is the card).
 2. Rebuild: `.venv/bin/python build.py`. This regenerates the page, the `.vcf`, the images, the QR art, the wallpapers and the Wallet pass. Add `--no-qr` to skip the QR art.
-3. Check: `python3 check_seo_heads.py public / /book` (title ≤ 60, description ≤ 155).
+3. Check: `python3 check_seo_heads.py public / /book /work` (title ≤ 60, description ≤ 155).
 4. Deploy: `vercel deploy --prod --scope auspicious-co`. Only `public/` and `vercel.json` are uploaded, never `certs/`.
 5. Page and contact changes reach people on their next scan. The wallpapers and the Wallet pass are images people already hold, so re-download or re-add those yourself. The printed QR never changes (it's just `HTTPS://ARINAKOS.COM`).
 
@@ -19,3 +19,14 @@ The site only explains the call and links out: no embed, because an embed is a t
 - Check: `python3 check_seo_heads.py public / /book`.
 
 Your own kit, to show the QR, is at `/me`: full-screen QR, the Wallet pass and the wallpapers. Wallet setup is in `APPLE_PASS_SETUP.md`. Tests are in `TEST_LOG.md`.
+
+## Portfolio (`/work`)
+
+`work.json` lists personal ventures outside the agency, in clusters (sections). Each item has a name, URL, domain,
+kind, one line and a screenshot in `assets/work/` (720×360 WebP, ~12–21 KB, cropped from the product's live site).
+The build makes `/work`, the "Things I've built" link at the bottom of `/`, the sitemap entry and the `/work` CSP header.
+Delete `work.json` to remove all of it. Keep each line to what the product's own site says.
+
+The name and headings use Brygada 1918 SemiBold (SIL Open Font License, `assets/fonts/OFL.txt`), subset to Latin
+(7 KB woff2) and inlined into each page's CSS, so there is no font request; the CSP allows `font-src data:` only.
+Design context for future changes is in `.impeccable.md`.

@@ -31,7 +31,7 @@
 </head>
 <body>
 <main class="book">
-  <a class="back" href="/"><img class="mini" src="{{AVATAR}}" width="56" height="56" alt=""><span>{{NAME}}</span></a>
+  <a class="back" href="/"><img class="mini" src="{{AVATAR}}" width="48" height="48" alt=""><span>{{NAME}}</span></a>
   <h1>{{LABEL}}</h1>
   <p class="facts">{{FACTS}}</p>
   <h2>What we cover</h2>
@@ -45,12 +45,10 @@
   <h2>Payment and changes</h2>
   <p>{{PAYMENT}}</p>
   <p>{{POLICY}}</p>
-  <nav class="actions" aria-label="Book the call">
-    <a class="btn primary" href="{{URL}}" rel="noopener">
-      <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-      <span>Pick a time</span>
-    </a>
-  </nav>
+  <a class="btn" href="{{URL}}" rel="noopener">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    <span>Pick a time</span>
+  </a>
   <p class="note">Opens Cal.com, where you choose a slot and pay by card.</p>
 </main>
 </body>
