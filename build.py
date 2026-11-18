@@ -19,7 +19,9 @@ NAME, GIVEN, FAMILY = card["name"]["full"], card["name"]["given"], card["name"][
 HEADLINE, ORG, SITE = card["headline"], card["org"], card["site_url"].rstrip("/")
 LINKEDIN, AGENCY = card["links"]["linkedin"], card["links"]["agency"]
 EMAIL, PHONE = card.get("email"), card.get("phone")
-NAVY, GOLD = card["colors"]["navy"], card["colors"]["gold"]
+NAVY, GOLD = card["colors"]["navy"], card["colors"]["gold"]  # QR art, Wallet pass, /me icons
+# Share image colours follow the site palette (src/style.css, dark mode); falls back to navy and gold.
+OG = card.get("og_colors") or {"bg": NAVY, "fg": "#FFFFFF", "muted": "#DCE1EB", "accent": GOLD}
 STYLE = card.get("qr_style", "A").lower()
 VCF = "ari-nakos.vcf"
 PKPASS = "ari-nakos.pkpass"
@@ -65,6 +67,15 @@ def font(size, weight="Bold"):
         return ImageFont.truetype("/System/Library/Fonts/HelveticaNeue.ttc", size, index=1 if weight == "Bold" else 0)
 
 
+def display_font(size):
+    """The site's display face (inlined subset) for the share image."""
+    from fontTools.ttLib import TTFont
+    f = TTFont(ROOT / "assets" / "fonts" / "brygada-600.woff2")
+    f.flavor = None
+    buf = io.BytesIO(); f.save(buf); buf.seek(0)
+    return ImageFont.truetype(buf, size)
+
+
 def circle(img, size):
     img = ImageOps.fit(img, (size * 4, size * 4), Image.LANCZOS)
     mask = Image.new("L", img.size, 0)
@@ -74,13 +85,13 @@ def circle(img, size):
     return out.resize((size, size), Image.LANCZOS)
 
 
-def ringed(size, ring_px, gap_px, bg):
-    """Round photo with a gold ring on `bg` (RGBA canvas of `size`)."""
+def ringed(size, ring_px, gap_px, bg, ring=None):
+    """Round photo with a ring (gold unless `ring` is given) on `bg` (RGBA canvas of `size`)."""
     s = 4
     big = size * s
     canvas = Image.new("RGBA", (big, big), (0, 0, 0, 0))
     d = ImageDraw.Draw(canvas)
-    d.ellipse((0, 0, big - 1, big - 1), fill=GOLD)
+    d.ellipse((0, 0, big - 1, big - 1), fill=ring or GOLD)
     r = ring_px * s
     d.ellipse((r, r, big - 1 - r, big - 1 - r), fill=bg)
     inner = big - 2 * (r + gap_px * s)
@@ -123,14 +134,14 @@ def build_images():
         bg.alpha_composite(ringed(rp, max(2, px // 60), max(2, px // 90), NAVY), ((px - rp) // 2,) * 2)
         bg.convert("RGB").save(PUB / f"me-icon-{px}.png", optimize=True)
 
-    # OG image 1200x630
+    # OG image 1200x630, in the site palette (dark mode), name in the site's display face
     W, H = 1200, 630
-    og = Image.new("RGBA", (W, H), NAVY)
+    og = Image.new("RGBA", (W, H), OG["bg"])
     d = ImageDraw.Draw(og)
     ph = 360
-    og.alpha_composite(ringed(ph, 8, 8, NAVY), (110, (H - ph) // 2))
+    og.alpha_composite(ringed(ph, 6, 10, OG["bg"], ring=OG["accent"]), (110, (H - ph) // 2))
     x = 110 + ph + 70
-    d.text((x, 200), NAME, font=font(84, "Bold"), fill="white")
+    d.text((x, 196), NAME, font=display_font(92), fill=OG["fg"])
     hf = font(40, "Regular")
     words, lines, cur = HEADLINE.split(), [], ""
     for w in words:  # wrap headline to fit
@@ -142,9 +153,9 @@ def build_images():
     lines.append(cur)
     y = 312
     for ln in lines:
-        d.text((x, y), ln, font=hf, fill=(220, 225, 235)); y += 52
-    d.rectangle((x, y + 26, x + 64, y + 30), fill=GOLD)
-    d.text((x, y + 52), "arinakos.com", font=font(34, "Semibold"), fill=GOLD)
+        d.text((x, y), ln, font=hf, fill=OG["muted"]); y += 52
+    d.rectangle((x, y + 26, x + 64, y + 29), fill=OG["accent"])
+    d.text((x, y + 52), "arinakos.com", font=font(34, "Semibold"), fill=OG["accent"])
     og.convert("RGB").save(PUB / "og.png", optimize=True)
 
     avatar = ImageOps.fit(PHOTO, (304, 304), Image.LANCZOS)

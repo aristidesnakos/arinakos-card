@@ -97,3 +97,17 @@ Honest note on W2: the build script prints title and description lengths, so tho
 | W10 | No horizontal scroll at 320 px and 375 px | `scrollWidth` equals the viewport width on `/`, `/book`, `/work` || **Pass.** `scrollWidth` equals the viewport at 320 px (dark), 375 px (light) and 390 px (emulated phone, both schemes) on all three pages |
 | W11 | Unchanged files | `.vcf`, images and `/me` page byte-identical to HEAD; `/me` CSP differs only by `font-src data:` || **Pass.** Only `index.html`, `book/index.html` and `sitemap.xml` changed in `public/`, plus the new `work/`. `.vcf`, images and `/me` are byte-identical to HEAD; scripted compare confirms the `/me` CSP differs only by `font-src data:` |
 | W12 | Live after deploy (18 Nov, Ari's yes, commit 79369df) on `personal-biz-card.vercel.app`: SEO heads, page bytes, headers | Same SEO numbers as W2; live pages byte-identical to `public/`; each page's CSP matches `vercel.json` | **Pass.** `PASS: 3 page(s) measured, 0 failing, 0 warning(s)` (41 / 143, 38 / 133, 42 / 139). `/`, `/book`, `/work`, `/me` byte-identical to the local build; CSP on all four matches `vercel.json`; `/work/*.webp` served as `image/webp`; sitemap lists `/`, `/book`, `/work`; `.vcf` still `text/vcard`. `arinakos.com` does not resolve yet, so re-run there once the domain is live |
+
+## 18 Nov 2026 — palette "Stone and Cobalt" (predictions written before testing)
+
+Ari picked palette C from four light/dark pairs. Site tokens change in `src/style.css` (gold accent renamed `--detail`); the share
+image (`og.png`) is regenerated in the dark palette with the display face. QR art, Wallet pass and `/me` icons keep navy and gold.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| C1 | Contrast of every rendered text colour, `/`, `/book`, `/work`, light and dark | All ≥ 4.5:1; lowest is secondary text on the tinted panel, ~6.0:1 light and ~6.9:1 dark || **Pass.** Lowest ratio light: `/` 6.02 (secondary text on the tinted panel), `/book` 6.71, `/work` 6.71. Dark: `/` 6.94, `/book` 7.64, `/work` 7.64. Smallest text 18 px; no horizontal scroll at 320 or 390 px |
+| C2 | No old colours left | No `#14213D`, `#C48C28`, `#E0B04F`, `#FAF8F3`, `#0E1628` in the three built pages || **Pass.** 0 matches in all three pages |
+| C3 | Unchanged outputs | `.vcf`, favicons, `/me` page and icons, QR files byte-identical to main; only the three pages, `og.png`, `vercel.json` hashes change || **Pass.** `git diff main -- public/` lists only `index.html`, `book/index.html`, `work/index.html` and `og.png` (plus new hashes in `vercel.json`) |
+| C4 | CSP enforced locally | Pages render styled with no console errors (new style hashes in `vercel.json`) || **Pass.** All three pages, both modes, at 320 and 390 px: styled background, Brygada loaded, no console errors |
+| C5 | Lighthouse mobile, local `/`, `/book`, `/work` | Perf ≥ 95, A11y 100, BP 100, SEO 100 || **Pass on repeat runs.** Runs 1 and 4 were taken with the Unity editor using about two cores (load average 11–14), so CPU-throttled blocking time spiked: `/` once 70 (3.2 s TBT), then 99, 99, 100; `/book` 100, 93, 100, 100; `/work` 100, 75, 100, 100 (`/book` and `/work` contain no script). A11y, BP and SEO were 100 in every run. One late change after the first runs: the button shadow was softened in light and removed in dark |
+| C6 | SEO heads, local | PASS, same numbers as W2 (copy unchanged) || `PASS: 3 page(s) measured, 0 failing, 0 warning(s)`: 41 / 143, 38 / 133, 42 / 139, measured over HTTP from the local CSP server |

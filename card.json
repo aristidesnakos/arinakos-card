@@ -31,6 +31,7 @@
     "policy": "Reschedule or cancel up to 24 hours before the call for a full refund. Later cancellations and no-shows aren’t refunded."
   },
   "colors": { "navy": "#14213D", "gold": "#C48C28", "white": "#FFFFFF" },
+  "og_colors": { "bg": "#111214", "fg": "#ECECEE", "muted": "#A4A5AD", "accent": "#9DB0FF" },
   "photo": "photo.jpg",
   "qr_style": "A"
 }
