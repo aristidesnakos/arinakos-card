@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+<link rel="canonical" href="{{SITE}}/">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1628" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="{{NAME}}">
+<meta property="og:title" content="{{NAME}} · {{HEADLINE}}">
+<meta property="og:description" content="{{OG_DESC}}">
+<meta property="og:url" content="{{SITE}}/">
+<meta property="og:image" content="{{SITE}}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{NAME}}, {{HEADLINE}}">
+<meta property="profile:first_name" content="{{GIVEN}}">
+<meta property="profile:last_name" content="{{FAMILY}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{NAME}} · {{HEADLINE}}">
+<meta name="twitter:description" content="{{OG_DESC}}">
+<meta name="twitter:image" content="{{SITE}}/og.png">
+<script type="application/ld+json">{{JSONLD}}</script>
+<style>{{CSS}}</style>
+</head>
+<body>
+<main>
+  <img class="photo" src="{{AVATAR}}" width="152" height="152" alt="Portrait of {{NAME}}">
+  <h1>{{NAME}}</h1>
+  <p class="headline">{{HEADLINE}}</p>
+  <p class="hint" id="hint" hidden>To save the contact, open this page in your browser: tap <b>⋯</b>, then <b>Open in browser</b>.</p>
+  <nav class="actions" aria-label="Contact {{NAME}}">
+    <a class="btn primary" id="save" href="/{{VCF}}" type="text/vcard">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path d="M15 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 3 17.5V19M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm10-3v6m3-3h-6"/></svg>
+      <span>Save contact</span>
+    </a>
+    {{SECONDARY}}
+  </nav>
+</main>
+<script>{{JS}}</script>
+</body>
+</html>

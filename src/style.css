@@ -1,0 +1,21 @@
+:root{--bg:#FAF8F3;--fg:#14213D;--muted:#3A4663;--line:rgba(20,33,61,.2);--btn:#14213D;--btn-fg:#fff;--gold:#C48C28;--focus:#14213D;--shadow:0 10px 28px -14px rgba(20,33,61,.7)}
+@media (prefers-color-scheme:dark){:root{--bg:#0E1628;--fg:#F5F2EA;--muted:#C3CADB;--line:rgba(245,242,234,.24);--btn:#E0B04F;--btn-fg:#0E1628;--gold:#E0B04F;--focus:#E0B04F;--shadow:0 10px 30px -14px rgba(224,176,79,.55)}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;min-height:100svh;display:grid;place-items:center;background:var(--bg);color:var(--fg);font:18px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+main{width:100%;max-width:420px;padding:max(40px,env(safe-area-inset-top)) 24px max(36px,env(safe-area-inset-bottom));text-align:center}
+.photo{display:block;margin:0 auto;width:152px;height:152px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px var(--bg),0 0 0 6.5px var(--gold),0 18px 40px -18px rgba(20,33,61,.55)}
+h1{margin:28px 0 6px;font-size:36px;line-height:1.1;font-weight:700;letter-spacing:-.022em}
+.headline{margin:0 0 34px;color:var(--muted);font-size:19px;line-height:1.35}
+.hint{margin:-14px 0 22px;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;font-size:18px;text-align:left}
+.hint[hidden]{display:none}
+.actions{display:grid;gap:12px}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:12px 20px;border-radius:16px;font-size:18px;font-weight:600;line-height:1.2;text-decoration:none;color:var(--fg);border:1.5px solid var(--line);transition:transform .12s ease,background-color .12s ease}
+.btn svg{flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.btn .fill{fill:currentColor;stroke:none}
+.btn:hover{background:rgba(127,127,127,.08)}
+.btn:active{transform:scale(.98)}
+.primary{min-height:62px;font-size:19px;border:0;background:var(--btn);color:var(--btn-fg);box-shadow:var(--shadow);margin-bottom:6px}
+.primary:hover{background:var(--btn);filter:brightness(1.08)}
+a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:active{transform:none}}

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Card · {{NAME}}</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Card">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="/me.webmanifest">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/me-icon-180.png">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:#14213D;font:18px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.stage{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:max(24px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
+.qr{width:min(92vw,72svh,640px);height:auto;aspect-ratio:1;display:block}
+.name{margin:0;font-size:24px;font-weight:700;letter-spacing:-.01em}
+.url{margin:-14px 0 0;font-size:18px;color:#3A4663}
+.more{margin-top:8px;font-size:18px;color:#3A4663;text-decoration:none}
+.kit{max-width:440px;margin:0 auto;padding:24px 16px 56px}
+.kit h2{font-size:22px;margin:0 0 14px}
+.kit ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.kit a{display:flex;align-items:center;min-height:52px;padding:12px 16px;border:1.5px solid rgba(20,33,61,.2);border-radius:14px;color:#14213D;text-decoration:none;font-weight:600}
+.kit p{color:#3A4663}
+a:focus-visible{outline:3px solid #14213D;outline-offset:3px}
+</style>
+</head>
+<body>
+<section class="stage">
+  <img class="qr" src="/qr/{{QR_SCREEN}}" width="1200" height="1200" alt="QR code that opens arinakos.com">
+  <p class="name">{{NAME}}</p>
+  <p class="url">arinakos.com</p>
+  <a class="more" href="#kit">Kit ↓</a>
+</section>
+<section class="kit" id="kit">
+  <h2>Your kit</h2>
+  <ul>
+    {{KIT}}
+  </ul>
+  <p>Add this page to your Home Screen (Share → Add to Home Screen) and it opens straight to the QR.</p>
+</section>
+<script>{{JS}}</script>
+</body>
+</html>

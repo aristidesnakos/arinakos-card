@@ -1,0 +1,16 @@
+{
+  "name": { "given": "Ari", "family": "Nakos", "full": "Ari Nakos" },
+  "headline": "Augmenting Businesses with AI",
+  "org": "The Auspicious Company",
+  "site_url": "https://arinakos.com",
+  "qr_url": "HTTPS://ARINAKOS.COM",
+  "links": {
+    "linkedin": "https://www.linkedin.com/in/aristidesnakos",
+    "agency": "https://theauspiciouscompany.com"
+  },
+  "email": "ari@theauspiciouscompany.com",
+  "phone": null,
+  "colors": { "navy": "#14213D", "gold": "#C48C28", "white": "#FFFFFF" },
+  "photo": "photo.jpg",
+  "qr_style": "A"
+}

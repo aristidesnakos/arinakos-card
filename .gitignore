@@ -1,0 +1,9 @@
+.venv/
+certs/
+.vercel/
+.DS_Store
+__pycache__/
+*.p12
+*.pem
+.vercel
+BUILD_PROMPT.md
