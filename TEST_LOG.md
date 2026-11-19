@@ -186,3 +186,6 @@ Ari: the HVAC job ran through 2015. `timeline.json` changes "2013" to "2013–20
 | # | Test | Prediction | Result |
 |---|---|---|---|
 | H1 | Rebuild and diff `public/` | Only `public/index.html` (the year and the new style hash in `vercel.json`) changes; title 41 / description 140; SEO heads PASS; CSP still matches | **Pass.** Only `public/index.html` changed (one line); `vercel.json` unchanged because the CSS, and so its hash, didn't change. Title 41 / description 140; `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`. "2013–2015" is the same length as the other ranges, so the layout is unchanged |
+
+Live after deploy `personal-biz-card-eu0liulzm` (arinakos.com): `/` returns 200, CSP matches `vercel.json`, HTML
+byte-identical to the build and shows "2013–2015"; live SEO heads `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`.
