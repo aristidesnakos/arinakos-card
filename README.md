@@ -30,8 +30,9 @@ every way to reach Ari, and a QR code on request). The QR art, wallpapers, `/me`
 
 ## Portfolio (`/work`)
 
-`work.json` lists personal ventures outside the agency, in clusters. The page uses the homepage's style: each
-cluster's label in the left column, each item a linked name with one line. `domain`, `kind` and `image` are kept in
+`work.json` lists products in `sections` ("On my own", then "The Auspicious Company", whose heading links to
+the agency), each with clusters. The page uses the homepage's style: each cluster's label in the left column, each
+item a linked name with one line taken from the product's own site. `domain`, `kind` and `image` are kept in
 the data but not shown (the screenshots stay in `assets/work/`, 720×360 WebP, if they come back). The build makes
 `/work`, the "Products" link in the homepage footer, the sitemap entry and the `/work` CSP header.
 Delete `work.json` to remove all of it. Keep each line to what the product's own site says.

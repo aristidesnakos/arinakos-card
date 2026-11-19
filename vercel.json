@@ -104,7 +104,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-xbBrqQB6Iz99aKXJxBfJ3FZ6uRdwD8xipjSpuQTkbco='"
+          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-JQMdhKVgIRM0JVqUXle1G4jkw6ozU4ML01jvw2mGe2I='"
         },
         {
           "key": "Cache-Control",

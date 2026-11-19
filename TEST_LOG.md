@@ -227,3 +227,19 @@ Live after deploy `personal-biz-card-67y4lz33s` (arinakos.com): `/`, `/work`, `/
 CSP matching `vercel.json` and HTML byte-identical to the build; the old `/work/*.webp` screenshots now 404. Live SEO
 heads `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`. Lighthouse mobile on the live `/work`: 100 / 100 / 100 / 100
 on both runs (LCP 1.0–1.1 s, TBT 0 ms).
+
+## 19 Nov 2026 — The Auspicious Company's products on `/work` (predictions written before testing)
+
+Ari: list the products built through The Auspicious Company too. `work.json` now has two sections: "On my own"
+(Japanese, E-commerce, Physical Intelligence, unchanged) and "The Auspicious Company" (heading links to the agency):
+Education (Setian), Construction (RapidSafeSystems), Privacy (privisay), Health Tech (Mangood, Pomenatal, Outbreak
+Files). Each line is taken from the product's own homepage title and description, read today. The page intro, title
+and description change because the page is no longer only side projects.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| A1 | `/work` at 375×812 and 1280×800, light and dark | Both sections read in the same style; no horizontal scroll; text ≥ 18 px; links ≥ 48 px tall (the linked section heading too); contrast ≥ 4.5:1 || **Failed first, then pass.** On a phone the linked heading "The Auspicious Company" wrapped and its ↗ sat at the far edge, then alone on a second line. Fixed by making the link inline and keeping the last word with the arrow (`white-space:nowrap`). Then at 320, 375 and 1280, light and dark: no horizontal scroll, smallest text 18 px, every link ≥ 48 px tall (heading lines 48–52 px), lowest contrast 6.71:1 light, 7.64:1 dark |
+| A2 | CSP enforced locally | Styled, no console errors (new `/work` style hash) || **Pass.** No console errors on `/work`, `/`, `/contact`, `/CONTACT`, `/book`, `/me` with the new hash enforced |
+| A3 | Lighthouse mobile, local `/work` | Perf ≥ 95 when the machine isn't loaded, A11y 100 (heading order h1 → h2 → h3), BP 100, SEO 100 || **Pass.** Four runs (two before the heading fix, two after): Perf 100, A11y 100 (heading order passes), BP 100, SEO 100 every time; LCP 1.0 s, TBT 0–80 ms |
+| A4 | SEO heads, local | PASS; `/work` title 51, description 152; others unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/work` 51 / 152; `/` 41 / 145, `/book` 38 / 133, `/contact` and `/CONTACT` 38 / 154 |
+| A5 | New outbound links | All six product links and the agency link return 200 with no redirect || **Pass.** Setian, RapidSafeSystems, privisay, Mangood, Pomenatal, Outbreak Files and theauspiciouscompany.com all 200, no redirect. Existing exception: swimmingrhodes.gr redirects to `/el` |

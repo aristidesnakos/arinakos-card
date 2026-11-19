@@ -1,67 +1,141 @@
 {
   "title": "Products",
-  "intro": "Ventures I built and run on my own, outside The Auspicious Company. They aren’t related to each other: most grew out of my own interests, and one started because someone asked for help.",
-  "clusters": [
+  "intro": "Products I’ve built, on my own and through my company, The Auspicious Company.",
+  "sections": [
     {
-      "label": "Japanese",
-      "items": [
+      "heading": "On my own",
+      "intro": "These aren’t related to each other: most grew out of my own interests, and one started because someone asked for help.",
+      "clusters": [
         {
-          "name": "MichiKanji",
-          "url": "https://www.michikanji.com/",
-          "domain": "michikanji.com",
-          "kind": "Web",
-          "line": "Look up any Japanese kanji: free stroke order, readings and meanings for all 1,910 JLPT kanji.",
-          "image": "michikanji.webp"
+          "label": "Japanese",
+          "items": [
+            {
+              "name": "MichiKanji",
+              "url": "https://www.michikanji.com/",
+              "domain": "michikanji.com",
+              "kind": "Web",
+              "line": "Look up any Japanese kanji: free stroke order, readings and meanings for all 1,910 JLPT kanji.",
+              "image": "michikanji.webp"
+            },
+            {
+              "name": "Tan Dash",
+              "url": "https://tandash.michikanji.com/",
+              "domain": "tandash.michikanji.com",
+              "kind": "iPhone game",
+              "line": "A runner game that teaches hiragana, katakana and kanji. Free to start, no ads.",
+              "image": "tandash.webp"
+            },
+            {
+              "name": "Llanai",
+              "url": "https://www.llanai.com/",
+              "domain": "llanai.com",
+              "kind": "Web app",
+              "line": "A journal for writing in Japanese. Each mistake is marked, explained and queued for review.",
+              "image": "llanai.webp"
+            },
+            {
+              "name": "KanjiFun",
+              "url": "https://www.kanjifun.com/",
+              "domain": "kanjifun.com",
+              "kind": "Web game",
+              "line": "Learn your first kanji in a pixel-art adventure game.",
+              "image": "kanjifun.webp"
+            }
+          ]
         },
         {
-          "name": "Tan Dash",
-          "url": "https://tandash.michikanji.com/",
-          "domain": "tandash.michikanji.com",
-          "kind": "iPhone game",
-          "line": "A runner game that teaches hiragana, katakana and kanji. Free to start, no ads.",
-          "image": "tandash.webp"
+          "label": "E-commerce",
+          "items": [
+            {
+              "name": "Swimming Rhodes",
+              "url": "https://www.swimmingrhodes.gr/",
+              "domain": "swimmingrhodes.gr",
+              "kind": "Website and shop",
+              "line": "Website and online shop for a swimming school in Rhodes, Greece. I built it and run it for the owners.",
+              "image": "swimmingrhodes.webp"
+            }
+          ]
         },
         {
-          "name": "Llanai",
-          "url": "https://www.llanai.com/",
-          "domain": "llanai.com",
-          "kind": "Web app",
-          "line": "A journal for writing in Japanese. Each mistake is marked, explained and queued for review.",
-          "image": "llanai.webp"
-        },
-        {
-          "name": "KanjiFun",
-          "url": "https://www.kanjifun.com/",
-          "domain": "kanjifun.com",
-          "kind": "Web game",
-          "line": "Learn your first kanji in a pixel-art adventure game.",
-          "image": "kanjifun.webp"
+          "label": "Physical Intelligence",
+          "items": [
+            {
+              "name": "FieldPi",
+              "url": "https://fieldpi.com/",
+              "domain": "fieldpi.com",
+              "kind": "Newsletter",
+              "line": "Physical Intelligence, a newsletter I write: operator observations from agriculture, construction and robotics.",
+              "image": "fieldpi.webp"
+            }
+          ]
         }
       ]
     },
     {
-      "label": "E-commerce",
-      "items": [
+      "heading": "The Auspicious Company",
+      "url": "https://www.theauspiciouscompany.com/",
+      "clusters": [
         {
-          "name": "Swimming Rhodes",
-          "url": "https://www.swimmingrhodes.gr/",
-          "domain": "swimmingrhodes.gr",
-          "kind": "Website and shop",
-          "line": "Website and online shop for a swimming school in Rhodes, Greece. I built it and run it for the owners.",
-          "image": "swimmingrhodes.webp"
-        }
-      ]
-    },
-    {
-      "label": "Physical Intelligence",
-      "items": [
+          "label": "Education",
+          "items": [
+            {
+              "name": "Setian",
+              "url": "https://www.setian.ai/",
+              "domain": "setian.ai",
+              "kind": "Web app",
+              "line": "A personalised calendar for every student, kept current from the school’s timetables and policies, with an assistant families can ask about school life."
+            }
+          ]
+        },
         {
-          "name": "FieldPi",
-          "url": "https://fieldpi.com/",
-          "domain": "fieldpi.com",
-          "kind": "Newsletter",
-          "line": "Physical Intelligence, a newsletter I write: operator observations from agriculture, construction and robotics.",
-          "image": "fieldpi.webp"
+          "label": "Construction",
+          "items": [
+            {
+              "name": "RapidSafeSystems",
+              "url": "https://www.rapidsafesystems.au/",
+              "domain": "rapidsafesystems.au",
+              "kind": "Web app",
+              "line": "AI construction project management for builders in Sydney: SWMS forms, safety compliance and workflows."
+            }
+          ]
+        },
+        {
+          "label": "Privacy",
+          "items": [
+            {
+              "name": "privisay",
+              "url": "https://www.privisay.com/",
+              "domain": "privisay.com",
+              "kind": "Mac app",
+              "line": "Private speech-to-text for Mac. Press a shortcut, speak, and the text appears, transcribed on your Mac with nothing sent to the cloud."
+            }
+          ]
+        },
+        {
+          "label": "Health Tech",
+          "items": [
+            {
+              "name": "Mangood",
+              "url": "https://mangood.app/",
+              "domain": "mangood.app",
+              "kind": "iPhone app",
+              "line": "Scan a grooming product or supplement barcode for a safety score personalised to men’s health."
+            },
+            {
+              "name": "Pomenatal",
+              "url": "https://www.pomenatal.com/",
+              "domain": "pomenatal.com",
+              "kind": "App",
+              "line": "Scan skincare, makeup, prenatal vitamins and baby products for ingredients to avoid while trying to conceive, pregnant or breastfeeding."
+            },
+            {
+              "name": "Outbreak Files",
+              "url": "https://outbreakfiles.com/",
+              "domain": "outbreakfiles.com",
+              "kind": "Website",
+              "line": "Current disease outbreaks, with every figure sourced and dated."
+            }
+          ]
         }
       ]
     }

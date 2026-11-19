@@ -49,9 +49,10 @@ if BOOKING:
 # Personal portfolio (/work), from work.json. Delete work.json to remove /work, its link on / and the sitemap entry.
 WORK = json.loads((ROOT / "work.json").read_text()) if (ROOT / "work.json").exists() else None
 if WORK:
-    _names = [i["name"] for c in WORK["clusters"] for i in c["items"]]
-    WORK_TITLE = f"Things {NAME} has built · Side projects"
-    WORK_DESC = f"Side projects {NAME} built and runs outside {ORG}: {', '.join(_names[:-1])} and {_names[-1]}."
+    _names = [i["name"] for sec in WORK["sections"] for c in sec["clusters"] for i in c["items"]]
+    WORK_TITLE = f"Products by {NAME} · MichiKanji, Setian, Mangood"
+    WORK_DESC = (f"Products {NAME} has built, on his own and through {ORG}: MichiKanji, Tan Dash, Setian, "
+                 "RapidSafeSystems, privisay, Mangood and more.")
     assert len(WORK_TITLE) <= 60 and len(WORK_DESC) <= 155, (len(WORK_TITLE), len(WORK_DESC))
 
 # /contact: the centred contact card, with a QR code (shown on request) that opens it. The QR is uppercase so it
@@ -425,15 +426,26 @@ def build_work(css, avatar):
     out.mkdir()
     esc = html.escape
     sections, items_ld, pos = [], [], 0
-    for c in WORK["clusters"]:
-        lis = []
-        for it in c["items"]:
-            pos += 1
-            lis.append(f'<li><a class="ttl" href="{esc(it["url"])}" rel="noopener"><span>{esc(it["name"])}</span>{OUT}</a>'
-                       f'<span class="nt">{esc(it["line"])}</span></li>')
-            items_ld.append({"@type": "ListItem", "position": pos, "name": it["name"], "url": it["url"]})
-        sections.append(f'<div class="cl"><h2 class="grp-lbl">{esc(c["label"])}</h2>\n    <ul class="grp">\n      '
-                        + "\n      ".join(lis) + "\n    </ul></div>")
+    for si, sec in enumerate(WORK["sections"], 1):
+        groups = []
+        for c in sec["clusters"]:
+            lis = []
+            for it in c["items"]:
+                pos += 1
+                lis.append(f'<li><a class="ttl" href="{esc(it["url"])}" rel="noopener"><span>{esc(it["name"])}</span>{OUT}</a>'
+                           f'<span class="nt">{esc(it["line"])}</span></li>')
+                items_ld.append({"@type": "ListItem", "position": pos, "name": it["name"], "url": it["url"]})
+            groups.append(f'<div class="cl"><h3 class="grp-lbl">{esc(c["label"])}</h3>\n      <ul class="grp">\n        '
+                          + "\n        ".join(lis) + "\n      </ul></div>")
+        if sec.get("url"):  # last word and arrow kept together so the arrow never wraps alone
+            *rest, last = sec["heading"].split(" ")
+            head = (f'<a class="sec-link" href="{esc(sec["url"])}" rel="noopener">{esc(" ".join(rest))} '
+                    f'<span class="nw">{esc(last)}{OUT}</span></a>')
+        else:
+            head = esc(sec["heading"])
+        intro = f'\n    <p class="sec-intro">{esc(sec["intro"])}</p>' if sec.get("intro") else ""
+        sections.append(f'<section class="sec" aria-labelledby="s{si}">\n    <h2 id="s{si}">{head}</h2>{intro}\n    '
+                        + "\n    ".join(groups) + "\n  </section>")
     foot = [f'<a href="/">{PREV}<span>Home</span></a>', f'<a href="/contact"><span>Contact card</span>{NEXT}</a>']
     if BOOKING:
         foot.append(f'<a href="/book"><span>{esc(BOOKING["button"])}</span>{NEXT}</a>')
@@ -444,7 +456,7 @@ def build_work(css, avatar):
     page = render("work.html", TITLE=esc(WORK_TITLE), DESC=esc(WORK_DESC), SITE=SITE, NAME=esc(NAME),
                   HEADLINE=esc(HEADLINE), AVATAR=avatar, CSS=css, H1=esc(WORK["title"]), INTRO=esc(WORK["intro"]),
                   JSONLD=json.dumps(ld, ensure_ascii=False).replace("</", "<\\/"),
-                  CLUSTERS="\n    ".join(sections), FOOT="\n    ".join(foot))
+                  CLUSTERS="\n  ".join(sections), FOOT="\n    ".join(foot))
     (out / "index.html").write_text(page)
     return css
 
