@@ -167,3 +167,14 @@ CSP drops `script-src`. The printed QR art, wallpapers, `/me` QR and the Wallet 
 | T5 | QR art decode (`qr_build.py --test`) | Style A files and wallpapers read `HTTPS://ARINAKOS.COM/CONTACT` (version 3) in 27/27 conditions; style B lower, as before || **Pass.** Style A: version 3 (29×29). `qr-a.png`, `qr-a-screen.png`, `qr-a.svg` (rsvg) and both wallpapers 27/27 each. Style B (version 6): 18/27 files, 12/27 wallpapers, same pattern as before |
 | T6 | `/contact` sheet QR and `/me` QR | Both decode to `HTTPS://ARINAKOS.COM/CONTACT` || **Pass.** zxing, zbar and OpenCV all read `HTTPS://ARINAKOS.COM/CONTACT` from the `/contact` sheet SVG and `/me`'s `qr-a` art. vCard `item3.URL` is `https://arinakos.com/contact` |
 | T7 | Links on `/` | Every outbound link returns 200 with no redirect; internal links resolve on the local server || **Pass, with two known exceptions.** All other outbound links 200, no redirect. LinkedIn answers 999 to scripts (its bot block, as before); swimmingrhodes.gr redirects to its `/el` language page (unchanged link from `work.json`). `/`, `/contact`, `/CONTACT`, `/work`, `/book` all 200 locally |
+
+### Live checks after deploying `/contact` and the timeline homepage (19 Nov 2026)
+
+Deployment `personal-biz-card-oegm7qvd2`, aliased to arinakos.com and www.arinakos.com.
+
+| Check | Result |
+|---|---|
+| `/`, `/contact`, `/CONTACT`, `/work`, `/book`, `/me`, `.vcf`, QR PNG | All 200 with the right content types; `/CONTACT` rewrite works live |
+| CSP and HTML | Every page's live CSP equals `vercel.json`, and the live HTML is byte-identical to the tested build |
+| Live QR art | `qr-a.png` and the iPhone wallpaper decode to `HTTPS://ARINAKOS.COM/CONTACT`; live vCard Card link is `/contact` |
+| SEO heads, live | `PASS: 5 page(s) measured, 0 failing, 0 warning(s)` (`/` 41 / 140) |
