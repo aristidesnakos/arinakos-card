@@ -6,6 +6,12 @@
   "outputDirectory": "public",
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/CONTACT",
+      "destination": "/contact"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -60,6 +66,32 @@
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-YPWjFl2kZqgfX/bl0B2mLrgT461qgobb8/+VxXQ7J00='"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/contact",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-ERdfgrzOy8HZUoLo6RyRJ0LOPZNP+KvczDmpZzNzvnM='; script-src 'sha256-OhDOJXFu8n2xFDwKJvW65+nCC4z6nYJdPqGmqX+Nzxo='"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/CONTACT",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-ERdfgrzOy8HZUoLo6RyRJ0LOPZNP+KvczDmpZzNzvnM='; script-src 'sha256-OhDOJXFu8n2xFDwKJvW65+nCC4z6nYJdPqGmqX+Nzxo='"
         },
         {
           "key": "Cache-Control",

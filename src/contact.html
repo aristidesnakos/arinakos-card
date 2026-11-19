@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+<link rel="canonical" href="{{SITE}}/contact">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F4F4F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111214" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="{{NAME}}">
+<meta property="og:title" content="{{NAME}} · {{HEADLINE}}">
+<meta property="og:description" content="{{OG_DESC}}">
+<meta property="og:url" content="{{SITE}}/contact">
+<meta property="og:image" content="{{SITE}}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{NAME}}, {{HEADLINE}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{NAME}} · {{HEADLINE}}">
+<meta name="twitter:description" content="{{OG_DESC}}">
+<meta name="twitter:image" content="{{SITE}}/og.png">
+<script type="application/ld+json">{{JSONLD}}</script>
+<style>{{CSS}}</style>
+</head>
+<body>
+<main class="card contact">
+  <img class="photo" src="{{AVATAR}}" width="120" height="120" alt="Portrait of {{NAME}}">
+  <h1>{{NAME}}</h1>
+  <p class="headline">{{HEADLINE}}</p>
+  <p class="hint" id="hint" hidden>To save the contact, open this page in your browser: tap <b>⋯</b>, then <b>Open in browser</b>.</p>
+  <a class="btn" id="save" href="/{{VCF}}" type="text/vcard">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path d="M15 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 3 17.5V19M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm10-3v6m3-3h-6"/></svg>
+    <span>Save contact</span>
+  </a>
+  <nav class="links" aria-label="Contact {{NAME}}">
+    {{SECONDARY}}
+  </nav>
+  <a class="qrbtn" href="#qr">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>
+    <span>Show QR code</span>
+  </a>
+  {{ABOUT}}
+</main>
+<section class="sheet" id="qr" aria-label="QR code for this page">
+  <div class="sheet-in">
+    {{QR_SVG}}
+    <p class="sheet-name">{{NAME}}</p>
+    <p class="sheet-url">Scan with your phone’s camera to open this card</p>
+    <a class="sheet-close" href="#top">Close</a>
+  </div>
+</section>
+<script>{{JS}}</script>
+</body>
+</html>

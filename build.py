@@ -50,6 +50,14 @@ if WORK:
     WORK_DESC = f"Side projects {NAME} built and runs outside {ORG}: {', '.join(_names[:-1])} and {_names[-1]}."
     assert len(WORK_TITLE) <= 60 and len(WORK_DESC) <= 155, (len(WORK_TITLE), len(WORK_DESC))
 
+# /contact: the centred contact card, with a QR code (shown on request) that opens it. The QR is uppercase so it
+# stays in QR alphanumeric mode; paths are case-sensitive, so /CONTACT is rewritten to /contact in vercel.json.
+CONTACT_QR = card.get("contact_qr_url", SITE.upper() + "/CONTACT")
+CONTACT_TITLE = f"Contact {NAME} · Save to your phone"
+CONTACT_DESC = (f"Save {NAME} to your contacts in one tap, with email, LinkedIn and a link to book a call. "
+                f"{HEADLINE}, through {ORG}.")
+assert len(CONTACT_TITLE) <= 60 and len(CONTACT_DESC) <= 155, (len(CONTACT_TITLE), len(CONTACT_DESC))
+
 # One self-hosted display face (Brygada 1918 SemiBold, SIL OFL, Latin subset), inlined so there's no font request.
 FONT_CSS = ('@font-face{font-family:"Brygada";font-weight:600;font-style:normal;font-display:swap;src:url(data:font/woff2;base64,'
             + base64.b64encode((ROOT / "assets" / "fonts" / "brygada-600.woff2").read_bytes()).decode() + ') format("woff2")}')
@@ -347,11 +355,42 @@ def build_pages(avatar, has_pass):
         "icons": [{"src": "/me-icon-192.png", "sizes": "192x192", "type": "image/png"},
                   {"src": "/me-icon-512.png", "sizes": "512x512", "type": "image/png"}]}, indent=1))
     (PUB / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
-    urls = [f"{SITE}/"] + ([f"{SITE}/book"] if BOOKING else []) + ([f"{SITE}/work"] if WORK else [])
+    urls = [f"{SITE}/", f"{SITE}/contact"] + ([f"{SITE}/book"] if BOOKING else []) + ([f"{SITE}/work"] if WORK else [])
     (PUB / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
         + "".join(f"<url><loc>{u}</loc></url>" for u in urls) + "</urlset>\n")
-    return css, build_book(css, avatar), build_work(css, avatar)
+    return css, build_book(css, avatar), build_work(css, avatar), build_contact(css, avatar, sec, person)
+
+
+def contact_qr_svg():
+    """Plain QR (error correction H) for CONTACT_QR, inline SVG: dark modules on white, no request, no script."""
+    import segno
+    q = segno.make(CONTACT_QR, error="h", micro=False)
+    # Filled squares (not segno's stroked path), so the site's icon stroke styles can't fatten the modules.
+    border, rows = 4, [list(r) for r in q.matrix]
+    n = len(rows) + 2 * border
+    d = "".join(f"M{x + border} {y + border}h1v1h-1z" for y, r in enumerate(rows) for x, v in enumerate(r) if v)
+    label = f"QR code that opens {SITE.split('//')[1]}/contact"
+    svg = (f'<svg class="qr" role="img" aria-label="{label}" viewBox="0 0 {n} {n}" shape-rendering="crispEdges" '
+           f'xmlns="http://www.w3.org/2000/svg"><rect width="{n}" height="{n}" fill="#FFFFFF"/>'
+           f'<path fill="#18181A" d="{d}"/></svg>')
+    return svg, q.version
+
+
+def build_contact(css, avatar, sec, person):
+    """/contact: photo, name, headline, Save contact, every way to reach Ari, and a QR code on request."""
+    css = css + "\n" + (SRC / "contact.css").read_text().strip()
+    qr, version = contact_qr_svg()
+    about = (f'<a class="about" href="/work"><span>{html.escape(WORK["title"])}</span>{NEXT}</a>' if WORK else "")
+    person = dict(person, url=SITE + "/contact")
+    page = render("contact.html", TITLE=html.escape(CONTACT_TITLE), DESC=html.escape(CONTACT_DESC),
+                  OG_DESC=html.escape(OG_DESC), SITE=SITE, NAME=html.escape(NAME), HEADLINE=html.escape(HEADLINE),
+                  JSONLD=json.dumps(person, ensure_ascii=False).replace("</", "<\\/"), CSS=css, AVATAR=avatar,
+                  VCF=VCF, SECONDARY="\n    ".join(sec), ABOUT=about, QR_SVG=qr, JS=INDEX_JS)
+    (PUB / "contact").mkdir(exist_ok=True)
+    (PUB / "contact" / "index.html").write_text(page)
+    print(f"contact QR: {CONTACT_QR} (version {version})")
+    return css
 
 
 def build_work(css, avatar):
@@ -423,7 +462,7 @@ def build_book(css, avatar):
     return css
 
 
-def build_vercel_json(css, book_css, work_css):
+def build_vercel_json(css, book_css, work_css, contact_css):
     base = ["default-src 'none'", "img-src 'self' data:", "font-src data:", "connect-src 'self'", "manifest-src 'self'",
             "base-uri 'none'", "form-action 'none'", "frame-ancestors 'none'"]
     me_css = (PUB / "me" / "index.html").read_text().split("<style>")[1].split("</style>")[0]
@@ -438,12 +477,17 @@ def build_vercel_json(css, book_css, work_css):
         "$schema": "https://openapi.vercel.sh/vercel.json",
         "framework": None, "buildCommand": None, "installCommand": None, "outputDirectory": "public",
         "cleanUrls": True, "trailingSlash": False,
+        # The QR encodes the path in uppercase (smaller QR); serve it from the same page.
+        "rewrites": [{"source": "/" + CONTACT_QR.split("/", 3)[3], "destination": "/contact"}],
         "headers": [
             {"source": "/(.*)", "headers": common},
             {"source": "/", "headers": [{"key": "Content-Security-Policy", "value": csp_index}, revalidate]},
             {"source": "/me", "headers": [{"key": "Content-Security-Policy", "value": csp_me}, revalidate]},
             *([{"source": "/book", "headers": [{"key": "Content-Security-Policy", "value": "; ".join(
                 base + [f"style-src {sha256_csp(book_css)}"])}, revalidate]}] if book_css else []),
+            *[{"source": src, "headers": [{"key": "Content-Security-Policy", "value": "; ".join(
+                base + [f"style-src {sha256_csp(contact_css)}", f"script-src {sha256_csp(INDEX_JS)}"])}, revalidate]}
+              for src in ("/contact", "/" + CONTACT_QR.split("/", 3)[3])],
             *([{"source": "/work", "headers": [{"key": "Content-Security-Policy", "value": "; ".join(
                 base + [f"style-src {sha256_csp(work_css)}"])}, revalidate]}] if work_css else []),
             {"source": f"/{VCF}", "headers": [
@@ -464,8 +508,8 @@ def main():
     avatar = build_images()
     n = build_vcf()
     has_pass = build_pass()
-    css, book_css, work_css = build_pages(avatar, has_pass)
-    build_vercel_json(css, book_css, work_css)
+    css, book_css, work_css, contact_css = build_pages(avatar, has_pass)
+    build_vercel_json(css, book_css, work_css, contact_css)
     size = (PUB / "index.html").stat().st_size
     print(f"built: index.html {size/1024:.1f} KB, {VCF} {n/1024:.1f} KB, title {len(TITLE)} chars, description {len(DESC)} chars")
     if BOOKING:

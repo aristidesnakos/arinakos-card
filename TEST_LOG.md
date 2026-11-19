@@ -132,3 +132,20 @@ added the domains.
 | D6 | `https://www.arinakos.com/book` | 308 to `https://arinakos.com/book` | **Pass.** `https://www.arinakos.com/book` → 308 `https://arinakos.com/book`; `https://www.arinakos.com/` → 308 `https://arinakos.com/`; `http://www.arinakos.com/work` → 308 to `https://www.…/work`, then to the apex (two hops) |
 | D7 | Public registration record (RDAP) | Registrar is Vercel's; registrant name, street, phone and email redacted; at most state (ID) and country (US) shown | **Pass, better than predicted.** Registry RDAP: registered 19 Nov 2026 07:18 UTC, expires 19 Nov 2027, registrar Name.com, Inc. (Vercel's registrar), status `client transfer prohibited`. Registrar RDAP shows no registrant data at all: name "Redacted For Privacy", organisation, address and phone of the privacy service Domain Protection Services, Inc. (Denver, CO), contact via Name.com's web form; Ari's state and country are not shown either. Contact verification could not be read yet: `get_domain_contact_verification` returned 400 within 30 minutes of purchase (documented `bought_too_recently`) |
 | D8 | `personal-biz-card.vercel.app` | Still 200 with the same bytes | **Pass.** `personal-biz-card.vercel.app/` 200, byte-identical to `public/index.html` |
+
+## 19 Nov 2026 — `/contact` page (predictions written before testing)
+
+Ari's pick: the card moves to `/contact`, centred, with a "Show QR code" button (QR on request). The QR is generated
+in the build (segno, error correction H) for `HTTPS://ARINAKOS.COM/CONTACT` and inlined as SVG; the sheet opens with
+CSS `:target`, so no script. `/CONTACT` is rewritten to `/contact` in `vercel.json` (paths are case-sensitive) with
+the same CSP. `/` is unchanged until the timeline homepage is built. Honest note on K6: the build prints the lengths.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| K1 | `/contact` at 375×812, light and dark | Photo, name and headline centred; Save contact the only solid button and above the fold; links ≥ 48 px; text ≥ 18 px; contrast ≥ 4.5:1 || **Pass.** Photo, name, headline and QR button centred to the pixel (offset 0); Save contact is the only solid link, bottom edge at 372 of 812; no link under 48 px; smallest text 18 px; lowest contrast 6.71:1 light, 7.64:1 dark; no horizontal scroll |
+| K2 | "Show QR code", JS off too | Opens a white full-screen sheet with the QR; "Close" returns to the card; works with JavaScript disabled || **Pass.** With JS on and off: the button sets `#qr`, the sheet shows (`display: grid`, QR 323 px wide at 375); Close sets `#top` and the sheet hides |
+| K3 | Decode the QR from a screenshot of the sheet (zxing, zbar, OpenCV) | All three read `HTTPS://ARINAKOS.COM/CONTACT` || **Failed first, then pass.** First build: no decoder read it. The site's shared icon style (`svg{stroke-width:1.9;stroke-linecap:round}`) fattened segno's stroked modules into blobs. Fixed by drawing the QR as filled squares. Then zxing, zbar and OpenCV all read `HTTPS://ARINAKOS.COM/CONTACT` at full, half and quarter size |
+| K4 | CSP enforced locally | Styled, no console errors; `/CONTACT` gets the same CSP as `/contact` || **Pass.** No console errors in either mode; local server sends the same CSP for `/CONTACT` and `/contact` (live rewrite to be checked after deploy) |
+| K5 | Lighthouse mobile, local `/contact` | Perf ≥ 95, A11y 100, BP 100, SEO 100 || **Pass.** Two runs: Perf 100, A11y 100, BP 100, SEO 100 both times (LCP 1.0 s, CLS 0.001, TBT 0–10 ms) |
+| K6 | SEO heads, local | PASS; `/contact` title 38, description 154; others unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/contact` and `/CONTACT` 38 / 154; `/`, `/book`, `/work` unchanged |
+| K7 | Unchanged outputs | `/`, `/book`, `/work`, `/me`, `.vcf` byte-identical to main || **Pass.** `git diff main -- public/` shows only `sitemap.xml` (adds `/contact`) plus the new `public/contact/`. `/contact/index.html` is 34.7 KB (the inline QR adds about 9 KB) |
