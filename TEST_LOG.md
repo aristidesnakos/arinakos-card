@@ -42,8 +42,8 @@ Setup: QR on your phone screen at full brightness, the other phone at arm's leng
 
 | # | Test | Prediction | Result |
 |---|---|---|---|
-| R1 | iPhone Camera scans style A (`/me` and lock-screen wallpaper) | First try, < 1 s, both lights | |
-| R2 | Android Camera + Google Lens scan style A | First try, both lights | |
+| R1 | iPhone Camera scans style A (`/me` and lock-screen wallpaper) | First try, < 1 s, both lights || **Pass.** Only `public/work/index.html` changed (`vercel.json` untouched, same CSS hash). At 375 and 1280, light and dark: no horizontal scroll, smallest text 18 px, no link under 48 px, lowest contrast 6.71:1 light, 7.64:1 dark; no console errors |
+| R2 | Android Camera + Google Lens scan style A | First try, both lights || **Pass.** `PASS: 5 page(s) measured, 0 failing, 0 warning(s)` (`/work` 51 / 152); prodoozie.com 200, no redirect |
 | R1b/R2b | Same with style B | iPhone first try; may miss on some Android cameras | |
 | R3 | iPhone Safari: Save contact | "Create New Contact" sheet with photo, title, company, email, 3 links, LinkedIn row | |
 | R4 | Android Chrome: Save contact | Downloads, opens in Contacts with photo and fields | |
@@ -248,3 +248,13 @@ Live after deploy `personal-biz-card-6at1sbqq6` (arinakos.com): `/work`, `/`, `/
 CSP matching `vercel.json` and HTML byte-identical to the build. Live SEO heads `PASS: 5 page(s) measured, 0 failing,
 0 warning(s)` (`/work` 51 / 152). Lighthouse mobile on the live `/work`: Perf 93 then 100 (the 93 was 310 ms of
 blocking time on a page with no script); A11y, BP, SEO 100 both runs.
+
+## 19 Nov 2026 — Productivity group with Prodoozie (predictions written before testing)
+
+Ari: rename "Privacy" to "Productivity" and add his second productivity tool, Prodoozie (line from prodoozie.com's
+own title and description, read today). Title and description unchanged.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| R1 | Rebuild, render `/work` at 375 and 1280, light and dark | Only `public/work/index.html` changes (no CSS change, so no new hash); no horizontal scroll; links ≥ 48 px; contrast ≥ 4.5:1 || **Pass.** Only `public/work/index.html` changed (`vercel.json` untouched, same CSS hash). At 375 and 1280, light and dark: no horizontal scroll, smallest text 18 px, no link under 48 px, lowest contrast 6.71:1 light, 7.64:1 dark; no console errors |
+| R2 | SEO heads and link check | PASS, `/work` 51 / 152; prodoozie.com returns 200 with no redirect || **Pass.** `PASS: 5 page(s) measured, 0 failing, 0 warning(s)` (`/work` 51 / 152); prodoozie.com 200, no redirect |
