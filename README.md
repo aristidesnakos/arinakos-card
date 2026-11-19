@@ -30,9 +30,10 @@ every way to reach Ari, and a QR code on request). The QR art, wallpapers, `/me`
 
 ## Portfolio (`/work`)
 
-`work.json` lists personal ventures outside the agency, in clusters (sections). Each item has a name, URL, domain,
-kind, one line and a screenshot in `assets/work/` (720×360 WebP, ~12–21 KB, cropped from the product's live site).
-The build makes `/work`, the bulleted "Things I've built" list on `/`, the sitemap entry and the `/work` CSP header.
+`work.json` lists personal ventures outside the agency, in clusters. The page uses the homepage's style: each
+cluster's label in the left column, each item a linked name with one line. `domain`, `kind` and `image` are kept in
+the data but not shown (the screenshots stay in `assets/work/`, 720×360 WebP, if they come back). The build makes
+`/work`, the "Products" link in the homepage footer, the sitemap entry and the `/work` CSP header.
 Delete `work.json` to remove all of it. Keep each line to what the product's own site says.
 
 The name and headings use Brygada 1918 SemiBold (SIL Open Font License, `assets/fonts/OFL.txt`), subset to Latin

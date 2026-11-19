@@ -414,34 +414,26 @@ def build_contact(css, avatar, sec, person):
 
 
 def build_work(css, avatar):
-    """/work: personal ventures outside the agency, one section per cluster, a screenshot and one line each."""
+    """/work: personal ventures outside the agency, in the homepage's style: one group per cluster, each item a linked
+    name and one line (no screenshots)."""
     if not WORK:
         shutil.rmtree(PUB / "work", ignore_errors=True)
         return None
-    css = css + "\n" + (SRC / "work.css").read_text().strip()
+    css = css + "\n" + (SRC / "home.css").read_text().strip() + "\n" + (SRC / "work.css").read_text().strip()
     out = PUB / "work"
     shutil.rmtree(out, ignore_errors=True)
     out.mkdir()
     esc = html.escape
     sections, items_ld, pos = [], [], 0
-    for ci, c in enumerate(WORK["clusters"], 1):
+    for c in WORK["clusters"]:
         lis = []
         for it in c["items"]:
-            shutil.copyfile(ROOT / "assets" / "work" / it["image"], out / it["image"])
             pos += 1
-            lazy = "" if pos == 1 else ' loading="lazy"'
-            lis.append(
-                f'<li class="item"><div class="frame"><img class="shot" src="/work/{esc(it["image"])}" width="720" height="360"'
-                f' alt="Screenshot of the {esc(it["name"])} website"{lazy} decoding="async"></div>'
-                f'<div class="body"><h3><a href="{esc(it["url"])}" rel="noopener">{esc(it["name"])}</a></h3>'
-                f'<p class="kind"><span>{esc(it["kind"])}</span><span aria-hidden="true">·</span>'
-                f'<span class="dom">{esc(it["domain"])}{OUT}</span></p><p class="line">{esc(it["line"])}</p></div></li>')
+            lis.append(f'<li><a class="ttl" href="{esc(it["url"])}" rel="noopener"><span>{esc(it["name"])}</span>{OUT}</a>'
+                       f'<span class="nt">{esc(it["line"])}</span></li>')
             items_ld.append({"@type": "ListItem", "position": pos, "name": it["name"], "url": it["url"]})
-        single = " single" if len(c["items"]) == 1 else ""
-        sections.append(
-            f'<section class="cluster{single}" aria-labelledby="c{ci}">\n    <div class="cluster-head">'
-            f'<span class="num">{ci:02d}</span><h2 id="c{ci}">{esc(c["label"])}</h2></div>\n    <ul class="items">\n      '
-            + "\n      ".join(lis) + "\n    </ul>\n  </section>")
+        sections.append(f'<div class="cl"><h2 class="grp-lbl">{esc(c["label"])}</h2>\n    <ul class="grp">\n      '
+                        + "\n      ".join(lis) + "\n    </ul></div>")
     foot = [f'<a href="/">{PREV}<span>Home</span></a>', f'<a href="/contact"><span>Contact card</span>{NEXT}</a>']
     if BOOKING:
         foot.append(f'<a href="/book"><span>{esc(BOOKING["button"])}</span>{NEXT}</a>')
@@ -452,7 +444,7 @@ def build_work(css, avatar):
     page = render("work.html", TITLE=esc(WORK_TITLE), DESC=esc(WORK_DESC), SITE=SITE, NAME=esc(NAME),
                   HEADLINE=esc(HEADLINE), AVATAR=avatar, CSS=css, H1=esc(WORK["title"]), INTRO=esc(WORK["intro"]),
                   JSONLD=json.dumps(ld, ensure_ascii=False).replace("</", "<\\/"),
-                  CLUSTERS="\n  ".join(sections), FOOT="\n    ".join(foot))
+                  CLUSTERS="\n    ".join(sections), FOOT="\n    ".join(foot))
     (out / "index.html").write_text(page)
     return css
 
@@ -537,8 +529,7 @@ def main():
         print(f"built: book/index.html {bs/1024:.1f} KB, title {len(BOOK_TITLE)} chars, description {len(BOOK_DESC)} chars")
     if WORK:
         ws = (PUB / "work" / "index.html").stat().st_size
-        imgs = sum(p.stat().st_size for p in (PUB / "work").glob("*.webp"))
-        print(f"built: work/index.html {ws/1024:.1f} KB + {imgs/1024:.0f} KB images, title {len(WORK_TITLE)} chars, description {len(WORK_DESC)} chars")
+        print(f"built: work/index.html {ws/1024:.1f} KB, title {len(WORK_TITLE)} chars, description {len(WORK_DESC)} chars")
 
 
 if __name__ == "__main__":

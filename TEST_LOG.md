@@ -208,3 +208,17 @@ Live after deploy `personal-biz-card-6n1wuls8g` (arinakos.com): `/`, `/contact`,
 CSP matching `vercel.json` and HTML byte-identical to the build. Live SEO heads `PASS: 5 page(s) measured, 0 failing,
 0 warning(s)`. Lighthouse mobile on the live `/` (load average still 4.6): Perf 93, 100, 100; A11y, BP, SEO 100 on all
 three; the 93 was again blocking time (310 ms).
+
+## 19 Nov 2026 — `/work` in the homepage's minimal style (predictions written before testing)
+
+Ari: make the products page match the homepage. `/work` now has the homepage header (photo, name and headline, which
+link home, plus the Contact card pill), the heading "Products", the intro, and each cluster as a label in the left
+column with linked names (↗) and one line each. No screenshots, domains or kind labels. Footer: Home, Contact card,
+Book a paid call, LinkedIn. Title and description unchanged.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| P1 | `/work` at 375×812 and 1280×800, light and dark | No horizontal scroll; text ≥ 18 px; links ≥ 48 px tall; contrast ≥ 4.5:1; reads like the homepage || **Failed first, then pass.** First render: the cluster labels inherited the big serif `h2` style, so on desktop "E-commerce" and "Physical Intelligence" spilled into the text column. Restyled them like the timeline years (18 px sans, muted) in a 190 px column. Then at 375 and 1280, light and dark: no horizontal scroll, smallest text 18 px, no link under 48 px, lowest contrast 6.71:1 light, 7.64:1 dark |
+| P2 | CSP enforced locally | Styled, no console errors (new `/work` style hash in `vercel.json`) || **Pass.** No console errors on `/work`, `/`, `/contact`, `/CONTACT`, `/book`, `/me` with the new hash enforced |
+| P3 | Lighthouse mobile, local `/work` | A11y, BP, SEO 100; Perf ≥ 95 when the machine isn't loaded (page drops ~89 KB of images) || **Pass.** Five runs (three before the label fix, two after): Perf 100, A11y 100, BP 100, SEO 100 every time (LCP 1.0 s, TBT 0–50 ms). The page dropped its ~89 KB of screenshots (30.2 KB total now) |
+| P4 | SEO heads, local | PASS; `/work` title 42, description 139 unchanged; others unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/work` 42 / 139 unchanged; `/` 41 / 145, `/book` 38 / 133, `/contact` and `/CONTACT` 38 / 154 |
