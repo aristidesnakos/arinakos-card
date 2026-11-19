@@ -31,9 +31,9 @@ PASS_TYPE_ID = "pass.com.arinakos.card"
 TIMELINE = json.loads((ROOT / "timeline.json").read_text())
 TITLE = f"{NAME} · {HEADLINE}"
 DESC = (f"{NAME}’s timeline, from Chemical Engineering at Brown and Impossible Foods to {ORG}, "
-        "and the side projects he has built.")
+        "Setian, RapidSafeSystems and MichiKanji.")
 assert len(TITLE) <= 60 and len(DESC) <= 155, (len(TITLE), len(DESC))
-HOME_OG_DESC = f"{NAME}’s timeline and the things he has built."
+HOME_OG_DESC = f"{NAME}’s timeline, from Greece and Brown to his own company and products."
 OG_DESC = f"Save {NAME} to your contacts in one tap."  # /contact
 
 # Paid 1:1 call, booked and paid on an external tool (Cal.com). null in card.json removes
@@ -357,7 +357,8 @@ def build_pages(avatar, has_pass):
 
 
 def build_home(css, avatar, person):
-    """/: name and headline, the timeline (one dot per moment on a vertical line), the projects as a bulleted list."""
+    """/: name and headline, the timeline (one dot per moment on a vertical line; a moment with a url links its
+    title), then a row of links: Products (/work), Contact card, Book a call, LinkedIn."""
     esc = html.escape
     css = css + "\n" + (SRC / "home.css").read_text().strip()
     ms = TIMELINE["moments"]
@@ -365,25 +366,18 @@ def build_home(css, avatar, person):
     for i, m in enumerate(ms):
         now = ' class="now"' if i == len(ms) - 1 else ""
         nt = f'<span class="nt">{esc(m["note"])}</span>' if m.get("note") else ""
-        lk = (f'<a class="lk" href="{esc(m["url"])}" rel="noopener"><span>{esc(m["domain"])}</span>{OUT}</a>'
-              if m.get("url") else "")
-        lis.append(f'<li{now}><span class="yr">{esc(m["years"])}</span>'
-                   f'<div class="bd"><span class="ttl">{esc(m["title"])}</span>{nt}{lk}</div></li>')
-    built = ""
-    if WORK:
-        items = [f'<li><a href="{esc(it["url"])}" rel="noopener">{esc(it["name"])}</a><span class="ln">{esc(it["line"])}</span></li>'
-                 for c in WORK["clusters"] for it in c["items"]]
-        built = (f'<section class="block" aria-labelledby="built">\n    <h2 id="built">{esc(WORK["title"])}</h2>\n'
-                 f'    <ul class="built">\n      ' + "\n      ".join(items) + '\n    </ul>\n'
-                 f'    <p class="built-more"><a href="/work"><span>The same, with screenshots</span>{NEXT}</a></p>\n  </section>')
-    foot = [f'<a href="/contact"><span>Contact card</span>{NEXT}</a>']
+        ttl = (f'<a class="ttl" href="{esc(m["url"])}" rel="noopener"><span>{esc(m["title"])}</span>{OUT}</a>'
+               if m.get("url") else f'<span class="ttl">{esc(m["title"])}</span>')
+        lis.append(f'<li{now}><span class="yr">{esc(m["years"])}</span><div class="bd">{ttl}{nt}</div></li>')
+    foot = ([f'<a href="/work"><span>Products</span>{NEXT}</a>'] if WORK else []) + [
+        f'<a href="/contact"><span>Contact card</span>{NEXT}</a>']
     if BOOKING:
         foot.append(f'<a href="/book"><span>{esc(BOOKING["button"])}</span>{NEXT}</a>')
     foot.append(f'<a href="{LINKEDIN}" rel="me noopener"><span>LinkedIn</span>{OUT}</a>')
     page = render("index.html", TITLE=esc(TITLE), DESC=esc(DESC), OG_DESC=esc(HOME_OG_DESC), SITE=SITE,
                   NAME=esc(NAME), GIVEN=GIVEN, FAMILY=FAMILY, HEADLINE=esc(HEADLINE), AVATAR=avatar, CSS=css,
                   JSONLD=json.dumps(person, ensure_ascii=False).replace("</", "<\\/"),
-                  TL_TITLE=esc(TIMELINE["title"]), MOMENTS="\n      ".join(lis), BUILT=built, FOOT="\n    ".join(foot))
+                  TL_TITLE=esc(TIMELINE["title"]), MOMENTS="\n      ".join(lis), FOOT="\n    ".join(foot))
     (PUB / "index.html").write_text(page)
     return css
 
@@ -407,7 +401,7 @@ def build_contact(css, avatar, sec, person):
     """/contact: photo, name, headline, Save contact, every way to reach Ari, and a QR code on request."""
     css = css + "\n" + (SRC / "contact.css").read_text().strip()
     qr, version = contact_qr_svg()
-    about = f'<a class="about" href="/"><span>Timeline and things I’ve built</span>{NEXT}</a>'
+    about = f'<a class="about" href="/"><span>Timeline and products</span>{NEXT}</a>'
     person = dict(person, url=SITE + "/contact")
     page = render("contact.html", TITLE=html.escape(CONTACT_TITLE), DESC=html.escape(CONTACT_DESC),
                   OG_DESC=html.escape(OG_DESC), SITE=SITE, NAME=html.escape(NAME), HEADLINE=html.escape(HEADLINE),

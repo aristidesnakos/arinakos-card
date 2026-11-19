@@ -189,3 +189,17 @@ Ari: the HVAC job ran through 2015. `timeline.json` changes "2013" to "2013–20
 
 Live after deploy `personal-biz-card-eu0liulzm` (arinakos.com): `/` returns 200, CSP matches `vercel.json`, HTML
 byte-identical to the build and shows "2013–2015"; live SEO heads `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`.
+
+## 19 Nov 2026 — leaner homepage (predictions written before testing)
+
+Ari: make it more minimal. A moment with a site now links its title (the separate domain line is gone), and the
+bulleted "Things I've built" list and "The same, with screenshots" link are replaced by a "Products" link in the
+footer row (Products, Contact card, Book a paid call, LinkedIn) that opens `/work`. The description now names the
+moments instead of the side projects; `/contact`'s link reads "Timeline and products".
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| L1 | `/` at 375×812 and 1280×800, light and dark | Dots still level with the years; linked titles ≥ 48 px tall; no horizontal scroll; text ≥ 18 px; contrast ≥ 4.5:1; page about 1,000 px shorter on a phone || **Pass.** At 375 and 1280, light and dark: every dot on the line and level with its year; no link under 48 px (linked titles included); no horizontal scroll; smallest text 18 px; lowest contrast 6.71:1 light, 7.64:1 dark. Phone page height 2582 → 1538 px |
+| L2 | CSP enforced locally | Styled, no console errors (new style hash written to `vercel.json`) || **Pass.** No console errors on `/`, `/contact`, `/CONTACT`, `/work`, `/book`, `/me` with the new hash enforced |
+| L3 | Lighthouse mobile, local `/` | Perf ≥ 95, A11y 100, BP 100, SEO 100 || **Mixed: A11y, BP and SEO 100 on all 5 runs; Perf 86, 100, 88, 100, 78.** Every dip is Total Blocking Time (470–930 ms) on a page that runs no script (its only `<script>` is JSON-LD). The Mac was loaded (load average 4.4: a VM, the iOS simulator, other sessions), so the dips are the machine, not the page; the clean runs scored 100 with LCP 1.0 s, CLS 0, TBT 0 ms. To recheck when the machine is idle |
+| L4 | SEO heads, local | PASS; `/` title 41, description 145; others unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/` 41 / 145; `/book` 38 / 133, `/work` 42 / 139, `/contact` and `/CONTACT` 38 / 154 |
