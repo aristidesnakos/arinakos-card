@@ -243,3 +243,8 @@ and description change because the page is no longer only side projects.
 | A3 | Lighthouse mobile, local `/work` | Perf ≥ 95 when the machine isn't loaded, A11y 100 (heading order h1 → h2 → h3), BP 100, SEO 100 || **Pass.** Four runs (two before the heading fix, two after): Perf 100, A11y 100 (heading order passes), BP 100, SEO 100 every time; LCP 1.0 s, TBT 0–80 ms |
 | A4 | SEO heads, local | PASS; `/work` title 51, description 152; others unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/work` 51 / 152; `/` 41 / 145, `/book` 38 / 133, `/contact` and `/CONTACT` 38 / 154 |
 | A5 | New outbound links | All six product links and the agency link return 200 with no redirect || **Pass.** Setian, RapidSafeSystems, privisay, Mangood, Pomenatal, Outbreak Files and theauspiciouscompany.com all 200, no redirect. Existing exception: swimmingrhodes.gr redirects to `/el` |
+
+Live after deploy `personal-biz-card-6at1sbqq6` (arinakos.com): `/work`, `/`, `/contact`, `/CONTACT` return 200 with
+CSP matching `vercel.json` and HTML byte-identical to the build. Live SEO heads `PASS: 5 page(s) measured, 0 failing,
+0 warning(s)` (`/work` 51 / 152). Lighthouse mobile on the live `/work`: Perf 93 then 100 (the 93 was 310 ms of
+blocking time on a page with no script); A11y, BP, SEO 100 both runs.
