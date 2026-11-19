@@ -222,3 +222,8 @@ Book a paid call, LinkedIn. Title and description unchanged.
 | P2 | CSP enforced locally | Styled, no console errors (new `/work` style hash in `vercel.json`) || **Pass.** No console errors on `/work`, `/`, `/contact`, `/CONTACT`, `/book`, `/me` with the new hash enforced |
 | P3 | Lighthouse mobile, local `/work` | A11y, BP, SEO 100; Perf ≥ 95 when the machine isn't loaded (page drops ~89 KB of images) || **Pass.** Five runs (three before the label fix, two after): Perf 100, A11y 100, BP 100, SEO 100 every time (LCP 1.0 s, TBT 0–50 ms). The page dropped its ~89 KB of screenshots (30.2 KB total now) |
 | P4 | SEO heads, local | PASS; `/work` title 42, description 139 unchanged; others unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/work` 42 / 139 unchanged; `/` 41 / 145, `/book` 38 / 133, `/contact` and `/CONTACT` 38 / 154 |
+
+Live after deploy `personal-biz-card-67y4lz33s` (arinakos.com): `/`, `/work`, `/contact`, `/CONTACT` return 200 with
+CSP matching `vercel.json` and HTML byte-identical to the build; the old `/work/*.webp` screenshots now 404. Live SEO
+heads `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`. Lighthouse mobile on the live `/work`: 100 / 100 / 100 / 100
+on both runs (LCP 1.0–1.1 s, TBT 0 ms).
