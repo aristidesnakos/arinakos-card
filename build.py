@@ -27,10 +27,14 @@ VCF = "ari-nakos.vcf"
 PKPASS = "ari-nakos.pkpass"
 PASS_TYPE_ID = "pass.com.arinakos.card"
 
+# / is the homepage: a timeline of notable moments (timeline.json) and the projects list from work.json.
+TIMELINE = json.loads((ROOT / "timeline.json").read_text())
 TITLE = f"{NAME} · {HEADLINE}"
-DESC = (f"Save {NAME} to your contacts in one tap. {HEADLINE}, through {ORG}, "
-        "including work in regulated sectors.")
-OG_DESC = f"Save {NAME} to your contacts in one tap."
+DESC = (f"{NAME}’s timeline, from Chemical Engineering at Brown and Impossible Foods to {ORG}, "
+        "and the side projects he has built.")
+assert len(TITLE) <= 60 and len(DESC) <= 155, (len(TITLE), len(DESC))
+HOME_OG_DESC = f"{NAME}’s timeline and the things he has built."
+OG_DESC = f"Save {NAME} to your contacts in one tap."  # /contact
 
 # Paid 1:1 call, booked and paid on an external tool (Cal.com). null in card.json removes
 # /book, the button on /, the vCard link, the sitemap entry and the CSP header.
@@ -206,7 +210,7 @@ def build_vcf():
         f"item1.URL;type=pref:{LINKEDIN}", "item1.X-ABLabel:LinkedIn",
         f"X-SOCIALPROFILE;type=linkedin:{LINKEDIN}",
         f"item2.URL:{AGENCY}", f"item2.X-ABLabel:{vesc(ORG)}",
-        f"item3.URL:{SITE}", "item3.X-ABLabel:Card",
+        f"item3.URL:{SITE}/contact", "item3.X-ABLabel:Card",
     ]
     if BOOKING:  # links to /book, not the tool, so saved contacts survive a change of booking tool
         lines += [f"item4.URL:{SITE}/book", "item4.X-ABLabel:Book a call"]
@@ -241,7 +245,7 @@ def build_pass():
                 {"key": "agency", "label": ORG, "value": AGENCY}]
         if EMAIL:
             back.insert(0, {"key": "email", "label": "Email", "value": EMAIL})
-        back.append({"key": "site", "label": "Card", "value": SITE})
+        back.append({"key": "site", "label": "Card", "value": SITE + "/contact"})
         barcode = {"format": "PKBarcodeFormatQR", "message": card["qr_url"],
                    "messageEncoding": "iso-8859-1", "altText": "arinakos.com"}
         pj = {
@@ -318,12 +322,6 @@ def build_pages(avatar, has_pass):
     if BOOKING:
         sec.append(row("/book", "calendar", BOOKING["button"], go=NEXT,
                        meta=f"{BOOKING['duration_min']} min · {PRICE}"))
-    more = ""
-    if WORK:
-        n = len(_names)
-        teaser = ", ".join(_names[:3]) + (f" and {n - 3} more" if n > 3 else "")
-        more = (f'<a class="more" href="/work"><span class="t">{html.escape(WORK["title"])}</span>'
-                f'<span class="s">{html.escape(teaser)}</span>{NEXT}</a>')
 
     person = {"@context": "https://schema.org", "@type": "Person", "name": NAME, "givenName": GIVEN,
               "familyName": FAMILY, "jobTitle": HEADLINE, "url": SITE + "/", "image": SITE + "/og.png",
@@ -332,11 +330,7 @@ def build_pages(avatar, has_pass):
     if EMAIL:
         person["email"] = "mailto:" + EMAIL
     css = FONT_CSS + "\n" + (SRC / "style.css").read_text().strip()
-    index = render("index.html", TITLE=html.escape(TITLE), DESC=html.escape(DESC), OG_DESC=html.escape(OG_DESC),
-                   SITE=SITE, NAME=html.escape(NAME), GIVEN=GIVEN, FAMILY=FAMILY, HEADLINE=html.escape(HEADLINE),
-                   JSONLD=json.dumps(person, ensure_ascii=False).replace("</", "<\\/"), CSS=css, AVATAR=avatar,
-                   VCF=VCF, SECONDARY="\n    ".join(sec), MORE=more, JS=INDEX_JS)
-    (PUB / "index.html").write_text(index)
+    home_css = build_home(css, avatar, person)
 
     kit = []
     if has_pass:
@@ -359,7 +353,39 @@ def build_pages(avatar, has_pass):
     (PUB / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
         + "".join(f"<url><loc>{u}</loc></url>" for u in urls) + "</urlset>\n")
-    return css, build_book(css, avatar), build_work(css, avatar), build_contact(css, avatar, sec, person)
+    return home_css, build_book(css, avatar), build_work(css, avatar), build_contact(css, avatar, sec, person)
+
+
+def build_home(css, avatar, person):
+    """/: name and headline, the timeline (one dot per moment on a vertical line), the projects as a bulleted list."""
+    esc = html.escape
+    css = css + "\n" + (SRC / "home.css").read_text().strip()
+    ms = TIMELINE["moments"]
+    lis = []
+    for i, m in enumerate(ms):
+        now = ' class="now"' if i == len(ms) - 1 else ""
+        nt = f'<span class="nt">{esc(m["note"])}</span>' if m.get("note") else ""
+        lk = (f'<a class="lk" href="{esc(m["url"])}" rel="noopener"><span>{esc(m["domain"])}</span>{OUT}</a>'
+              if m.get("url") else "")
+        lis.append(f'<li{now}><span class="yr">{esc(m["years"])}</span>'
+                   f'<div class="bd"><span class="ttl">{esc(m["title"])}</span>{nt}{lk}</div></li>')
+    built = ""
+    if WORK:
+        items = [f'<li><a href="{esc(it["url"])}" rel="noopener">{esc(it["name"])}</a><span class="ln">{esc(it["line"])}</span></li>'
+                 for c in WORK["clusters"] for it in c["items"]]
+        built = (f'<section class="block" aria-labelledby="built">\n    <h2 id="built">{esc(WORK["title"])}</h2>\n'
+                 f'    <ul class="built">\n      ' + "\n      ".join(items) + '\n    </ul>\n'
+                 f'    <p class="built-more"><a href="/work"><span>The same, with screenshots</span>{NEXT}</a></p>\n  </section>')
+    foot = [f'<a href="/contact"><span>Contact card</span>{NEXT}</a>']
+    if BOOKING:
+        foot.append(f'<a href="/book"><span>{esc(BOOKING["button"])}</span>{NEXT}</a>')
+    foot.append(f'<a href="{LINKEDIN}" rel="me noopener"><span>LinkedIn</span>{OUT}</a>')
+    page = render("index.html", TITLE=esc(TITLE), DESC=esc(DESC), OG_DESC=esc(HOME_OG_DESC), SITE=SITE,
+                  NAME=esc(NAME), GIVEN=GIVEN, FAMILY=FAMILY, HEADLINE=esc(HEADLINE), AVATAR=avatar, CSS=css,
+                  JSONLD=json.dumps(person, ensure_ascii=False).replace("</", "<\\/"),
+                  TL_TITLE=esc(TIMELINE["title"]), MOMENTS="\n      ".join(lis), BUILT=built, FOOT="\n    ".join(foot))
+    (PUB / "index.html").write_text(page)
+    return css
 
 
 def contact_qr_svg():
@@ -381,7 +407,7 @@ def build_contact(css, avatar, sec, person):
     """/contact: photo, name, headline, Save contact, every way to reach Ari, and a QR code on request."""
     css = css + "\n" + (SRC / "contact.css").read_text().strip()
     qr, version = contact_qr_svg()
-    about = (f'<a class="about" href="/work"><span>{html.escape(WORK["title"])}</span>{NEXT}</a>' if WORK else "")
+    about = f'<a class="about" href="/"><span>Timeline and things I’ve built</span>{NEXT}</a>'
     person = dict(person, url=SITE + "/contact")
     page = render("contact.html", TITLE=html.escape(CONTACT_TITLE), DESC=html.escape(CONTACT_DESC),
                   OG_DESC=html.escape(OG_DESC), SITE=SITE, NAME=html.escape(NAME), HEADLINE=html.escape(HEADLINE),
@@ -422,7 +448,7 @@ def build_work(css, avatar):
             f'<section class="cluster{single}" aria-labelledby="c{ci}">\n    <div class="cluster-head">'
             f'<span class="num">{ci:02d}</span><h2 id="c{ci}">{esc(c["label"])}</h2></div>\n    <ul class="items">\n      '
             + "\n      ".join(lis) + "\n    </ul>\n  </section>")
-    foot = [f'<a href="/">{PREV}<span>Card</span></a>']
+    foot = [f'<a href="/">{PREV}<span>Home</span></a>', f'<a href="/contact"><span>Contact card</span>{NEXT}</a>']
     if BOOKING:
         foot.append(f'<a href="/book"><span>{esc(BOOKING["button"])}</span>{NEXT}</a>')
     foot.append(f'<a href="{LINKEDIN}" rel="me noopener"><span>LinkedIn</span>{OUT}</a>')
@@ -466,7 +492,7 @@ def build_vercel_json(css, book_css, work_css, contact_css):
     base = ["default-src 'none'", "img-src 'self' data:", "font-src data:", "connect-src 'self'", "manifest-src 'self'",
             "base-uri 'none'", "form-action 'none'", "frame-ancestors 'none'"]
     me_css = (PUB / "me" / "index.html").read_text().split("<style>")[1].split("</style>")[0]
-    csp_index = "; ".join(base + [f"style-src {sha256_csp(css)}", f"script-src {sha256_csp(INDEX_JS)}"])
+    csp_index = "; ".join(base + [f"style-src {sha256_csp(css)}"])
     csp_me = "; ".join(base + [f"style-src {sha256_csp(me_css)}", f"script-src {sha256_csp(ME_JS)}"])
     common = [{"key": "X-Content-Type-Options", "value": "nosniff"},
               {"key": "Referrer-Policy", "value": "no-referrer"},

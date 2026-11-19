@@ -149,3 +149,21 @@ the same CSP. `/` is unchanged until the timeline homepage is built. Honest note
 | K5 | Lighthouse mobile, local `/contact` | Perf ≥ 95, A11y 100, BP 100, SEO 100 || **Pass.** Two runs: Perf 100, A11y 100, BP 100, SEO 100 both times (LCP 1.0 s, CLS 0.001, TBT 0–10 ms) |
 | K6 | SEO heads, local | PASS; `/contact` title 38, description 154; others unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/contact` and `/CONTACT` 38 / 154; `/`, `/book`, `/work` unchanged |
 | K7 | Unchanged outputs | `/`, `/book`, `/work`, `/me`, `.vcf` byte-identical to main || **Pass.** `git diff main -- public/` shows only `sitemap.xml` (adds `/contact`) plus the new `public/contact/`. `/contact/index.html` is 34.7 KB (the inline QR adds about 9 KB) |
+
+## 19 Nov 2026 — timeline homepage at `/` (predictions written before testing)
+
+Ari's pick: timeline A (a line). `/` becomes the homepage: photo, name and headline with a "Contact card" link, his
+nine moments (`timeline.json`, his words lightly tidied) on a vertical line with a dot each, then the projects from
+`work.json` as a bulleted list. `/work` stays as the version with screenshots. `/` no longer has a script, so its
+CSP drops `script-src`. The printed QR art, wallpapers, `/me` QR and the Wallet pass barcode now encode
+`HTTPS://ARINAKOS.COM/CONTACT` (`card.json` `qr_url`); the vCard "Card" link points at `/contact`.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| T1 | `/` at 375×812 and 1280×800, light and dark | Line and dots line up with the years; no horizontal scroll; text ≥ 18 px; links ≥ 48 px tall; contrast ≥ 4.5:1 || **Pass.** At 375 and 1280, light and dark: every dot sits on the line (offset 0) and level with its year; no horizontal scroll; smallest text 18 px; no link under 48 px; lowest contrast 6.71:1 light, 7.64:1 dark. Page height 2582 px at 375 |
+| T2 | CSP enforced locally | Styled, no console errors; `/` header has no `script-src` || **Pass.** No console errors on `/`, `/contact`, `/CONTACT`, `/work`, `/book`, `/me`; the `/` CSP is `style-src` hash only, no `script-src` |
+| T3 | Lighthouse mobile, local `/` | Perf ≥ 95, A11y 100, BP 100, SEO 100 || **Pass.** Two runs: Perf 100, A11y 100, BP 100, SEO 100 both times (LCP 1.0 s, CLS 0, TBT 0 ms) |
+| T4 | SEO heads, local | PASS; `/` title 41, description 140; `/contact`, `/book`, `/work` unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/` 41 / 140; `/book` 38 / 133, `/work` 42 / 139, `/contact` and `/CONTACT` 38 / 154 unchanged |
+| T5 | QR art decode (`qr_build.py --test`) | Style A files and wallpapers read `HTTPS://ARINAKOS.COM/CONTACT` (version 3) in 27/27 conditions; style B lower, as before || **Pass.** Style A: version 3 (29×29). `qr-a.png`, `qr-a-screen.png`, `qr-a.svg` (rsvg) and both wallpapers 27/27 each. Style B (version 6): 18/27 files, 12/27 wallpapers, same pattern as before |
+| T6 | `/contact` sheet QR and `/me` QR | Both decode to `HTTPS://ARINAKOS.COM/CONTACT` || **Pass.** zxing, zbar and OpenCV all read `HTTPS://ARINAKOS.COM/CONTACT` from the `/contact` sheet SVG and `/me`'s `qr-a` art. vCard `item3.URL` is `https://arinakos.com/contact` |
+| T7 | Links on `/` | Every outbound link returns 200 with no redirect; internal links resolve on the local server || **Pass, with two known exceptions.** All other outbound links 200, no redirect. LinkedIn answers 999 to scripts (its bot block, as before); swimmingrhodes.gr redirects to its `/el` language page (unchanged link from `work.json`). `/`, `/contact`, `/CONTACT`, `/work`, `/book` all 200 locally |

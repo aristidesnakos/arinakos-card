@@ -32,20 +32,25 @@
 <style>{{CSS}}</style>
 </head>
 <body>
-<main class="card">
-  <img class="photo" src="{{AVATAR}}" width="104" height="104" alt="Portrait of {{NAME}}">
-  <h1>{{NAME}}</h1>
-  <p class="headline">{{HEADLINE}}</p>
-  <p class="hint" id="hint" hidden>To save the contact, open this page in your browser: tap <b>⋯</b>, then <b>Open in browser</b>.</p>
-  <a class="btn" id="save" href="/{{VCF}}" type="text/vcard">
-    <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24"><path d="M15 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 3 17.5V19M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm10-3v6m3-3h-6"/></svg>
-    <span>Save contact</span>
-  </a>
-  <nav class="links" aria-label="Contact {{NAME}}">
-    {{SECONDARY}}
-  </nav>
-  {{MORE}}
+<main class="home">
+  <header class="intro">
+    <img class="photo" src="{{AVATAR}}" width="72" height="72" alt="Portrait of {{NAME}}">
+    <div class="who">
+      <h1>{{NAME}}</h1>
+      <p class="headline">{{HEADLINE}}</p>
+    </div>
+    <a class="pill" href="/contact">Contact card</a>
+  </header>
+  <section class="block" aria-labelledby="tl">
+    <h2 id="tl">{{TL_TITLE}}</h2>
+    <ol class="tl">
+      {{MOMENTS}}
+    </ol>
+  </section>
+  {{BUILT}}
+  <footer class="home-foot">
+    {{FOOT}}
+  </footer>
 </main>
-<script>{{JS}}</script>
 </body>
 </html>

@@ -39,7 +39,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-vtJOIrSXr0+v1EZ7IGRLt4n4vzdXtP1JAfkoTwxLtvQ='; script-src 'sha256-OhDOJXFu8n2xFDwKJvW65+nCC4z6nYJdPqGmqX+Nzxo='"
+          "value": "default-src 'none'; img-src 'self' data:; font-src data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; style-src 'sha256-bKUv+Hndd/WKMX30kwBEmaybizquweWM00DdWeCy+8k='"
         },
         {
           "key": "Cache-Control",

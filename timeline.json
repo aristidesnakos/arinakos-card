@@ -1,0 +1,14 @@
+{
+  "title": "Timeline",
+  "moments": [
+    {"years": "1991–2008", "title": "Greece"},
+    {"years": "2008–2012", "title": "Chemical Engineering at Brown", "note": "Lots of fun."},
+    {"years": "2012", "title": "Road trip from Providence to California", "note": "Best trip of my life."},
+    {"years": "2013", "title": "HVAC technical sales", "note": "Learned how to interface."},
+    {"years": "2016–2023", "title": "Engineering and operations at Impossible Foods", "note": "A Silicon Valley startup job."},
+    {"years": "2023", "title": "The Auspicious Company", "note": "Solopreneur and freelance work.", "url": "https://www.theauspiciouscompany.com/", "domain": "theauspiciouscompany.com"},
+    {"years": "2024", "title": "Setian", "note": "Started as a WhatsApp chatbot for guardians.", "url": "https://www.setian.ai/", "domain": "setian.ai"},
+    {"years": "2025", "title": "RapidSafeSystems", "note": "Safety forms for construction sites.", "url": "https://www.rapidsafesystems.au/", "domain": "rapidsafesystems.au"},
+    {"years": "2025", "title": "MichiKanji", "note": "A Japanese dictionary.", "url": "https://www.michikanji.com/", "domain": "michikanji.com"}
+  ]
+}
