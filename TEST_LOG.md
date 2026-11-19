@@ -203,3 +203,8 @@ moments instead of the side projects; `/contact`'s link reads "Timeline and prod
 | L2 | CSP enforced locally | Styled, no console errors (new style hash written to `vercel.json`) || **Pass.** No console errors on `/`, `/contact`, `/CONTACT`, `/work`, `/book`, `/me` with the new hash enforced |
 | L3 | Lighthouse mobile, local `/` | Perf ≥ 95, A11y 100, BP 100, SEO 100 || **Mixed: A11y, BP and SEO 100 on all 5 runs; Perf 86, 100, 88, 100, 78.** Every dip is Total Blocking Time (470–930 ms) on a page that runs no script (its only `<script>` is JSON-LD). The Mac was loaded (load average 4.4: a VM, the iOS simulator, other sessions), so the dips are the machine, not the page; the clean runs scored 100 with LCP 1.0 s, CLS 0, TBT 0 ms. To recheck when the machine is idle |
 | L4 | SEO heads, local | PASS; `/` title 41, description 145; others unchanged || `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`: `/` 41 / 145; `/book` 38 / 133, `/work` 42 / 139, `/contact` and `/CONTACT` 38 / 154 |
+
+Live after deploy `personal-biz-card-6n1wuls8g` (arinakos.com): `/`, `/contact`, `/CONTACT`, `/work` return 200 with
+CSP matching `vercel.json` and HTML byte-identical to the build. Live SEO heads `PASS: 5 page(s) measured, 0 failing,
+0 warning(s)`. Lighthouse mobile on the live `/` (load average still 4.6): Perf 93, 100, 100; A11y, BP, SEO 100 on all
+three; the 93 was again blocking time (310 ms).
