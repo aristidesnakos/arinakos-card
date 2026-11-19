@@ -262,3 +262,20 @@ own title and description, read today). Title and description unchanged.
 Live after deploy `personal-biz-card-jiaoal3ke` (arinakos.com): `/work` returns 200, CSP matches `vercel.json`, HTML
 byte-identical to the build, showing Productivity with privisay and Prodoozie. Live SEO heads `PASS: 5 page(s)
 measured, 0 failing, 0 warning(s)`.
+
+## 19 Nov 2026 — Apple Wallet pass (predictions written before testing)
+
+Pass Type ID `pass.com.arinakos.card` registered in Ari's Apple Developer account (team The Auspicious Company,
+`64M97F3U6B`); its certificate (expires 19 Dec 2027) was made from `certs/pass.csr` and matches `certs/pass.key`.
+`build.py` unchanged.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| WP1 | Build with `certs/pass.cer` | Prints `pass: built ari-nakos.pkpass (team 64M97F3U6B)`; git shows only `public/ari-nakos.pkpass` added and `public/me/index.html` changed (`vercel.json` already carries the pkpass header, and `/me`'s CSS doesn't change) | **Pass.** `pass: built ari-nakos.pkpass (team 64M97F3U6B)`; git: `public/ari-nakos.pkpass` added, `public/me/index.html` changed, nothing else (`vercel.json` untouched) |
+| WP2 | Signature | `openssl smime -verify` on `manifest.json` passes with the full chain (pass cert → WWDR G4 → Apple Root CA from the macOS system roots); every SHA-1 in the manifest matches its file; no private key in the zip | **Pass.** `Verification successful` against WWDR G4 + Apple Root CA (system roots); a manifest with one byte changed fails. 8 files, all SHA-1s match, no private key in the zip. (A first run failed with "unable to get issuer": `security find-certificate -c` returned only the first "Apple Root CA*" match, not the one that signs G4; `-a` fixed the test, not the pass) |
+| WP3 | `pass.json` | `passTypeIdentifier` `pass.com.arinakos.card`, `teamIdentifier` `64M97F3U6B`, barcode `PKBarcodeFormatQR` with message `HTTPS://ARINAKOS.COM/CONTACT` | **Pass.** `pass.com.arinakos.card`, `64M97F3U6B`, `PKBarcodeFormatQR`, `HTTPS://ARINAKOS.COM/CONTACT` in both `barcodes` and legacy `barcode` |
+| WP4 | Barcode decodes | A QR made from the pass's message decodes to `HTTPS://ARINAKOS.COM/CONTACT` in zxing, zbar and OpenCV | **Pass.** zxing, zbar and OpenCV all read `HTTPS://ARINAKOS.COM/CONTACT` |
+| WP5 | `/me` | Lists "Add to Apple Wallet" linking to `/ari-nakos.pkpass`; no new inline CSS or script, so its CSP is unchanged | **Pass.** One added line: `<li><a href="/ari-nakos.pkpass">Add to Apple Wallet</a></li>`, first in the kit; `vercel.json` (and so `/me`'s CSP) unchanged |
+| WP6 | `vercel.json` | `/ari-nakos.pkpass` served as `application/vnd.apple.pkpass`, `attachment` | **Pass.** `Content-Type: application/vnd.apple.pkpass`, `Content-Disposition: attachment; filename="ari-nakos.pkpass"`, revalidate |
+| WP7 | SEO heads and Lighthouse | `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`; `/`, `/book`, `/work`, `/contact` byte-identical, so their Lighthouse scores are unchanged by construction | **Pass.** `PASS: 5 page(s) measured, 0 failing, 0 warning(s)` (`/` 41/145, `/book` 38/133, `/work` 51/152, `/contact` and `/CONTACT` 38/154); those pages unchanged in git |
+| WP8 | iOS 26.5 Simulator, Safari opens the pass | Wallet's "Add" sheet shows the navy card with name, headline and QR; it adds; the QR in a screenshot decodes to `HTTPS://ARINAKOS.COM/CONTACT` | **Pass.** Tapped "Add to Apple Wallet" on `/me` served locally: PassKit logged `Signature validation: succeeded`, the Add sheet showed the card as predicted (`test-evidence/ios-sim-wallet-pass.png`), and Add gave `PDDatabaseManager: inserted pass`. zxing, zbar and OpenCV read `HTTPS://ARINAKOS.COM/CONTACT` from the screenshot's QR |
