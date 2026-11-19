@@ -258,3 +258,7 @@ own title and description, read today). Title and description unchanged.
 |---|---|---|---|
 | R1 | Rebuild, render `/work` at 375 and 1280, light and dark | Only `public/work/index.html` changes (no CSS change, so no new hash); no horizontal scroll; links ≥ 48 px; contrast ≥ 4.5:1 || **Pass.** Only `public/work/index.html` changed (`vercel.json` untouched, same CSS hash). At 375 and 1280, light and dark: no horizontal scroll, smallest text 18 px, no link under 48 px, lowest contrast 6.71:1 light, 7.64:1 dark; no console errors |
 | R2 | SEO heads and link check | PASS, `/work` 51 / 152; prodoozie.com returns 200 with no redirect || **Pass.** `PASS: 5 page(s) measured, 0 failing, 0 warning(s)` (`/work` 51 / 152); prodoozie.com 200, no redirect |
+
+Live after deploy `personal-biz-card-jiaoal3ke` (arinakos.com): `/work` returns 200, CSP matches `vercel.json`, HTML
+byte-identical to the build, showing Productivity with privisay and Prodoozie. Live SEO heads `PASS: 5 page(s)
+measured, 0 failing, 0 warning(s)`.
