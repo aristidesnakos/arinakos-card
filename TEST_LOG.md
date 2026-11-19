@@ -279,3 +279,8 @@ Pass Type ID `pass.com.arinakos.card` registered in Ari's Apple Developer accoun
 | WP6 | `vercel.json` | `/ari-nakos.pkpass` served as `application/vnd.apple.pkpass`, `attachment` | **Pass.** `Content-Type: application/vnd.apple.pkpass`, `Content-Disposition: attachment; filename="ari-nakos.pkpass"`, revalidate |
 | WP7 | SEO heads and Lighthouse | `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`; `/`, `/book`, `/work`, `/contact` byte-identical, so their Lighthouse scores are unchanged by construction | **Pass.** `PASS: 5 page(s) measured, 0 failing, 0 warning(s)` (`/` 41/145, `/book` 38/133, `/work` 51/152, `/contact` and `/CONTACT` 38/154); those pages unchanged in git |
 | WP8 | iOS 26.5 Simulator, Safari opens the pass | Wallet's "Add" sheet shows the navy card with name, headline and QR; it adds; the QR in a screenshot decodes to `HTTPS://ARINAKOS.COM/CONTACT` | **Pass.** Tapped "Add to Apple Wallet" on `/me` served locally: PassKit logged `Signature validation: succeeded`, the Add sheet showed the card as predicted (`test-evidence/ios-sim-wallet-pass.png`), and Add gave `PDDatabaseManager: inserted pass`. zxing, zbar and OpenCV read `HTTPS://ARINAKOS.COM/CONTACT` from the screenshot's QR |
+
+Live after deploy `personal-biz-card-plclb6k92` (arinakos.com): `/ari-nakos.pkpass` returns 200 with
+`application/vnd.apple.pkpass` and `attachment; filename="ari-nakos.pkpass"`, byte-identical to the build. `/me`
+returns 200, byte-identical, with "Add to Apple Wallet". `/CONTACT` returns 200. Live SEO heads `PASS: 5 page(s) measured,
+0 failing, 0 warning(s)`. Real-phone test R6 is Ari's next step.
