@@ -178,3 +178,11 @@ Deployment `personal-biz-card-oegm7qvd2`, aliased to arinakos.com and www.arinak
 | CSP and HTML | Every page's live CSP equals `vercel.json`, and the live HTML is byte-identical to the tested build |
 | Live QR art | `qr-a.png` and the iPhone wallpaper decode to `HTTPS://ARINAKOS.COM/CONTACT`; live vCard Card link is `/contact` |
 | SEO heads, live | `PASS: 5 page(s) measured, 0 failing, 0 warning(s)` (`/` 41 / 140) |
+
+## 19 Nov 2026 — HVAC years 2013–2015 (prediction written before testing)
+
+Ari: the HVAC job ran through 2015. `timeline.json` changes "2013" to "2013–2015"; nothing else on `/` moves.
+
+| # | Test | Prediction | Result |
+|---|---|---|---|
+| H1 | Rebuild and diff `public/` | Only `public/index.html` (the year and the new style hash in `vercel.json`) changes; title 41 / description 140; SEO heads PASS; CSP still matches | **Pass.** Only `public/index.html` changed (one line); `vercel.json` unchanged because the CSS, and so its hash, didn't change. Title 41 / description 140; `PASS: 5 page(s) measured, 0 failing, 0 warning(s)`. "2013–2015" is the same length as the other ranges, so the layout is unchanged |
